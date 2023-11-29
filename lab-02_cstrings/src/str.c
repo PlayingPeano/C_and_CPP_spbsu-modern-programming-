@@ -2,6 +2,7 @@
 
 char *my_strcpy(char *dst, const char *src)
 {
+    char *dstBegin = dst;
     while (*src)
     {
         *dst = *src;
@@ -9,7 +10,7 @@ char *my_strcpy(char *dst, const char *src)
         ++dst;
     }
     *dst = '\0';
-    return dst;
+    return dstBegin;
 }
 
 char *my_strcat(char *dst, const char *src)
