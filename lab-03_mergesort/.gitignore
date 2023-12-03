@@ -11,3 +11,4 @@
 # CLion projects:
 /.idea/
 /cmake-build*/
+CMakeLists.txt
