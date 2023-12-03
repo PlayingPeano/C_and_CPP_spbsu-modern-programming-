@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
         {
             printf("%d ", arr[i]);
         }
+        printf("\n");
 
         free(arr);
     } else if (strcmp(type, "char") == 0)
@@ -61,6 +62,7 @@ int main(int argc, char *argv[])
         {
             printf("%c ", arr[i]);
         }
+        printf("\n");
 
         free(arr);
     } else if (strcmp(type, "str") == 0)
@@ -73,24 +75,8 @@ int main(int argc, char *argv[])
         {
             printf("%s ", arr[i]);
         }
+        printf("\n");
     }
 
     return EXIT_SUCCESS;
 }
-
-
-
-
-
-
-
-
-//    char *data[] = {"cvbc", "b", "kek"};
-//    my_mergesort(data,
-//                 sizeof data / sizeof data[0], sizeof data[0], string_gt_comparator);
-//
-//
-//    for (size_t i = 0; i < 3; ++i)
-//    {
-//        printf("%s\n", data[i]);
-//    }
