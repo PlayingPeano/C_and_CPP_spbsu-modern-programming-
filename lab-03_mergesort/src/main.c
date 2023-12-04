@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)//no agrs -> nothing to do
     {
+        printf("\n");
         return EXIT_SUCCESS;
     }
     char *type = argv[1];
