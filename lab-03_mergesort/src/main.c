@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         char **arr = &argv[2];
         size_t n = (size_t)(argc - 2);
 
-        my_mergesort(arr, n, sizeof(arr[0]), string_gt_comparator);
+        my_mergesort(arr, n, sizeof(char*), string_gt_comparator);
 
         for (size_t i = 0; i < n - 1; ++i)
         {
