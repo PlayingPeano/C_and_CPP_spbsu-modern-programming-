@@ -1,4 +1,4 @@
-CFLAGS = -Wno-implicit-function-declaration -I./include -Wall -Wextra -Werror
+CFLAGS = -Wno-implicit-function-declaration -I./include -Wall -Wextra -Werror -g
 SRC = src
 OBJ = obj
 PROGRAM = lab-03_mergesort
