@@ -39,11 +39,11 @@ int main(int argc, char *argv[])
 
         my_mergesort(arr, n, sizeof(int), int_gt_comparator);
 
-        for (size_t i = 0; i < n; ++i)
+        for (size_t i = 0; i < n - 1; ++i)
         {
             printf("%d ", arr[i]);
         }
-        printf("\n");
+        printf("%d\n", arr[n - 1]);
 
         free(arr);
     } else if (strcmp(type, "char") == 0)
@@ -58,35 +58,25 @@ int main(int argc, char *argv[])
 
         my_mergesort(arr, n, sizeof(char), char_gt_comparator);
 
-        for (size_t i = 0; i < n; ++i)
+        for (size_t i = 0; i < n - 1; ++i)
         {
             printf("%c ", arr[i]);
         }
-        printf("\n");
+        printf("%c\n", arr[n - 1]);
 
         free(arr);
     } else if (strcmp(type, "str") == 0)
     {
-        char **arr = malloc(sizeof(char*) * (argc - 2));
-        assert(arr != NULL);
+        char **arr = &argv[2];
         size_t n = (size_t)(argc - 2);
-        for (size_t i = 0; i < n; ++i)
-        {
-            arr[i] = strdup(argv[i + 2]);
-        }
 
         my_mergesort(arr, n, sizeof(arr[0]), string_gt_comparator);
 
-        for (size_t i = 0; i < n; ++i)
+        for (size_t i = 0; i < n - 1; ++i)
         {
             printf("%s ", arr[i]);
         }
-        printf("\n");
-
-        for (size_t i = 0; i < n; ++i)
-        {
-            free(arr[i]);
-        }
+        printf("%s\n", arr[n - 1]);
     }
 
     return EXIT_SUCCESS;
