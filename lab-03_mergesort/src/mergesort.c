@@ -3,8 +3,18 @@
 #include <string.h>
 #include <assert.h>
 
+void *my_memcpy(void *destptr, const void *srcptr, size_t num)
+{
+    void* begin = destptr;
+    for (size_t i = 0; i < num; ++i)
+    {
+        *((unsigned char*)destptr + i) =  *((unsigned char*)srcptr + i);
+    }
+    return begin;
+}
+
 int merge(void *array, size_t left, size_t mid, size_t right, size_t element_size,
-           int (*comparator)(const void *, const void *))
+          int (*comparator)(const void *, const void *))
 {
     size_t left_arr_size = mid - left + 1;
     size_t right_arr_size = right - mid;
@@ -21,8 +31,8 @@ int merge(void *array, size_t left, size_t mid, size_t right, size_t element_siz
         return -1;
     }
 
-    memcpy(left_arr, (char *) array + left * element_size, left_arr_size * element_size);
-    memcpy(right_arr, (char *) array + (mid + 1) * element_size, right_arr_size * element_size);
+    my_memcpy(left_arr, (char *) array + left * element_size, left_arr_size * element_size);
+    my_memcpy(right_arr, (char *) array + (mid + 1) * element_size, right_arr_size * element_size);
 
     size_t i = 0;
     size_t j = 0;
@@ -32,11 +42,11 @@ int merge(void *array, size_t left, size_t mid, size_t right, size_t element_siz
     {
         if (comparator((char *) left_arr + i * element_size, (char *) right_arr + j * element_size) <= 0)
         {
-            memcpy((char *) array + k * element_size, (char *) left_arr + i * element_size, element_size);
+            my_memcpy((char *) array + k * element_size, (char *) left_arr + i * element_size, element_size);
             ++i;
         } else
         {
-            memcpy((char *) array + k * element_size, (char *) right_arr + j * element_size, element_size);
+            my_memcpy((char *) array + k * element_size, (char *) right_arr + j * element_size, element_size);
             ++j;
         }
         ++k;
@@ -44,14 +54,14 @@ int merge(void *array, size_t left, size_t mid, size_t right, size_t element_siz
 
     while (i < left_arr_size)
     {
-        memcpy((char *) array + k * element_size, (char *) left_arr + i * element_size, element_size);
+        my_memcpy((char *) array + k * element_size, (char *) left_arr + i * element_size, element_size);
         ++i;
         ++k;
     }
 
     while (j < right_arr_size)
     {
-        memcpy((char *) array + k * element_size, (char *) right_arr + j * element_size, element_size);
+        my_memcpy((char *) array + k * element_size, (char *) right_arr + j * element_size, element_size);
         ++j;
         ++k;
     }
@@ -62,7 +72,7 @@ int merge(void *array, size_t left, size_t mid, size_t right, size_t element_siz
 }
 
 int mergesortFunc(void *array, size_t left, size_t right, size_t element_size,
-                   int (*comparator)(const void *, const void *))
+                  int (*comparator)(const void *, const void *))
 {
     if (left >= right)
     {
