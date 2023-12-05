@@ -3,16 +3,23 @@
 #include <string.h>
 #include <assert.h>
 
-void merge(void *array, size_t left, size_t mid, size_t right, size_t element_size,
+int merge(void *array, size_t left, size_t mid, size_t right, size_t element_size,
            int (*comparator)(const void *, const void *))
 {
     size_t left_arr_size = mid - left + 1;
     size_t right_arr_size = right - mid;
 
     void *left_arr = malloc(left_arr_size * element_size);
-    assert(left_arr != NULL);
+    if (left_arr == NULL)
+    {
+        return -1;
+    }
     void *right_arr = malloc(right_arr_size * element_size);
-    assert(right_arr != NULL);
+    if (right_arr == NULL)
+    {
+        free(left_arr);
+        return -1;
+    }
 
     memcpy(left_arr, (char *) array + left * element_size, left_arr_size * element_size);
     memcpy(right_arr, (char *) array + (mid + 1) * element_size, right_arr_size * element_size);
@@ -51,28 +58,45 @@ void merge(void *array, size_t left, size_t mid, size_t right, size_t element_si
 
     free(left_arr);
     free(right_arr);
+    return 0;
 }
 
-void mergesortFunc(void *array, size_t left, size_t right, size_t element_size,
+int mergesortFunc(void *array, size_t left, size_t right, size_t element_size,
                    int (*comparator)(const void *, const void *))
 {
     if (left >= right)
     {
-        return;
+        return 0;
     }
     size_t mid = left + (right - left) / 2;
 
-    mergesortFunc(array, left, mid, element_size, comparator);
-    mergesortFunc(array, mid + 1, right, element_size, comparator);
+    int k = 0;
 
-    merge(array, left, mid, right, element_size, comparator);
+    k = mergesortFunc(array, left, mid, element_size, comparator);
+    if (k == -1)
+    {
+        return k;
+    }
+    k = mergesortFunc(array, mid + 1, right, element_size, comparator);
+    if (k == -1)
+    {
+        return k;
+    }
+
+    k = merge(array, left, mid, right, element_size, comparator);
+    if (k == -1)
+    {
+        return k;
+    }
+    return k;
 }
 
-void my_mergesort(
+int my_mergesort(
         void *array,
         size_t elements, size_t element_size,
         int (*comparator)(const void *, const void *)
 )
 {
-    mergesortFunc(array, 0, elements - 1, element_size, comparator);
+    int k = mergesortFunc(array, 0, elements - 1, element_size, comparator);
+    return k;
 }

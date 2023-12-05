@@ -2,7 +2,7 @@
 #define LAB_03_MERGESORT_MERGESORT_H
 #include <stdlib.h>
 
-void my_mergesort(
+int my_mergesort(
         void *array,
         size_t elements, size_t element_size,
         int (*comparator)(const void *, const void *)

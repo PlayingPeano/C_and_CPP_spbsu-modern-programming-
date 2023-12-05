@@ -6,17 +6,17 @@
 
 int int_gt_comparator(const void *a, const void *b)
 {
-    return *(int *) a - *(int *) b;  // Сортировка массива по убыванию.
+    return *(int *) a - *(int *) b;
 }
 
 int char_gt_comparator(const void *a, const void *b)
 {
-    return *(char *) a - *(char *) b;  // Сортировка массива по убыванию.
+    return *(char *) a - *(char *) b;
 }
 
 int string_gt_comparator(const void *a, const void *b)
 {
-    return strcmp(*(char **) a, *(char **) b);  // Сортировка массива по убыванию.
+    return strcmp(*(char **) a, *(char **) b);
 }
 
 
@@ -38,7 +38,13 @@ int main(int argc, char *argv[])
             arr[i] = atoi(argv[i + 2]);
         }
 
-        my_mergesort(arr, n, sizeof(int), int_gt_comparator);
+        int k = my_mergesort(arr, n, sizeof(int), int_gt_comparator);
+        if (k == -1)
+        {
+            printf("Error: memory allocation failed.\n");
+            free(arr);
+            return 1;
+        }
 
         for (size_t i = 0; i < n - 1; ++i)
         {
@@ -57,7 +63,13 @@ int main(int argc, char *argv[])
             arr[i] = argv[i + 2][0];
         }
 
-        my_mergesort(arr, n, sizeof(char), char_gt_comparator);
+        int k = my_mergesort(arr, n, sizeof(char), char_gt_comparator);
+        if (k == -1)
+        {
+            printf("Error: memory allocation failed.\n");
+            free(arr);
+            return 1;
+        }
 
         for (size_t i = 0; i < n - 1; ++i)
         {
@@ -71,7 +83,12 @@ int main(int argc, char *argv[])
         char **arr = &argv[2];
         size_t n = (size_t)(argc - 2);
 
-        my_mergesort(arr, n, sizeof(char*), string_gt_comparator);
+        int k = my_mergesort(arr, n, sizeof(char*), string_gt_comparator);
+        if (k == -1)
+        {
+            printf("Error: memory allocation failed.\n");
+            return 1;
+        }
 
         for (size_t i = 0; i < n - 1; ++i)
         {
