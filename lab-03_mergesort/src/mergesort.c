@@ -5,12 +5,12 @@
 
 void *my_memcpy(void *destptr, const void *srcptr, size_t num)
 {
-    void* begin = destptr;
+    void *beginOfDest = destptr;
     for (size_t i = 0; i < num; ++i)
     {
-        *((unsigned char*)destptr + i) =  *((unsigned char*)srcptr + i);
+        *((unsigned char *) destptr + i) = *((unsigned char *) srcptr + i);
     }
-    return begin;
+    return beginOfDest;
 }
 
 int merge(void *array, size_t left, size_t mid, size_t right, size_t element_size,
@@ -80,25 +80,22 @@ int mergesortFunc(void *array, size_t left, size_t right, size_t element_size,
     }
     size_t mid = left + (right - left) / 2;
 
-    int k = 0;
-
-    k = mergesortFunc(array, left, mid, element_size, comparator);
-    if (k == -1)
+    if (mergesortFunc(array, left, mid, element_size, comparator) == -1)
     {
-        return k;
-    }
-    k = mergesortFunc(array, mid + 1, right, element_size, comparator);
-    if (k == -1)
-    {
-        return k;
+        return -1;
     }
 
-    k = merge(array, left, mid, right, element_size, comparator);
-    if (k == -1)
+    if (mergesortFunc(array, mid + 1, right, element_size, comparator) == -1)
     {
-        return k;
+        return -1;
     }
-    return k;
+
+    if (merge(array, left, mid, right, element_size, comparator) == -1)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 int my_mergesort(
@@ -107,6 +104,5 @@ int my_mergesort(
         int (*comparator)(const void *, const void *)
 )
 {
-    int k = mergesortFunc(array, 0, elements - 1, element_size, comparator);
-    return k;
+    return mergesortFunc(array, 0, elements - 1, element_size, comparator);
 }
