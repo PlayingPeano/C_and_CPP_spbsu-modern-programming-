@@ -11,3 +11,5 @@
 # CLion projects:
 /.idea/
 /cmake-build*/
+CMakeLists.txt
+/lab-03_mergesort.dSYM/
