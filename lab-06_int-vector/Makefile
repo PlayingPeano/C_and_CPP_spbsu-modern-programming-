@@ -9,10 +9,10 @@ all: $(OBJ) $(PROGRAM)
 $(PROGRAM): $(OBJ)/main.o $(OBJ)/my_vector.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(OBJ)/main.o: $(SRC)/main.cpp
+$(OBJ)/my_vector.o: $(SRC)/my_vector.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ)/my_vector.o: $(SRC)/my_vector.cpp
+$(OBJ)/main.o: $(SRC)/main.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ):
