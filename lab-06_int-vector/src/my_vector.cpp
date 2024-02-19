@@ -7,7 +7,7 @@ MyVector::MyVector()
 {
     _size = 0;
     _capacity = 2;
-    _data = nullptr;
+    _data = new int[2];
 }
 
 MyVector::MyVector(std::size_t init_capacity)
@@ -25,7 +25,7 @@ MyVector::MyVector(const MyVector &that)
     std::memcpy(_data, that._data, _size * sizeof(int));
 }
 
-void swap(MyVector& first, MyVector& second)
+void swap(MyVector &first, MyVector &second)
 {
     std::swap(first._size, second._size);
     std::swap(first._capacity, second._capacity);
