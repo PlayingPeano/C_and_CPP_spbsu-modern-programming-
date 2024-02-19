@@ -6,14 +6,14 @@
 MyVector::MyVector()
 {
     _size = 0;
-    _capacity = 0;
+    _capacity = 2;
     _data = nullptr;
 }
 
 MyVector::MyVector(std::size_t init_capacity)
 {
-    _size = init_capacity;
-    _capacity = 0;
+    _size = 0;
+    _capacity = init_capacity;
     _data = new int[init_capacity];
 }
 
