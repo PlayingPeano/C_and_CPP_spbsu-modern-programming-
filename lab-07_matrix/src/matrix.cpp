@@ -45,7 +45,7 @@ Matrix::Matrix(const Matrix &m)
 
 Matrix::~Matrix()
 {
-    if(_data != nullptr)
+    if (_data != nullptr)
     {
         delete[] _data[0];
     }
@@ -93,12 +93,12 @@ void Matrix::print(FILE *f) const
             if (j != _cols - 1)
             {
                 fprintf(f, "%d ", _data[i][j]);
-            }
-            else
+            } else
             {
                 fprintf(f, "%d", _data[i][j]);
             }
         }
+        fprintf(f, "\n");
     }
 }
 
