@@ -32,9 +32,9 @@ Matrix::Matrix(size_t r, size_t c)
 Matrix::Matrix(const Matrix &m)
 {
     Matrix temp(m._rows, m._cols);
-    for (size_t i = 0; i < _rows; ++i)
+    for (size_t i = 0; i < m._rows; ++i)
     {
-        for (size_t j = 0; j < _cols; ++j)
+        for (size_t j = 0; j < m._cols; ++j)
         {
             temp._data[i][j] = m._data[i][j];
         }
@@ -45,10 +45,6 @@ Matrix::Matrix(const Matrix &m)
 
 Matrix::~Matrix()
 {
-    for (size_t i = 0; i < _rows; ++i)
-    {
-        delete[] _data[i];
-    }
     delete[] _data;
 }
 
@@ -132,12 +128,12 @@ Matrix Matrix::operator*(const Matrix &m) const
         throw std::invalid_argument("Matrices have different sizes");
     }
 
-    Matrix temp(*this);
+    Matrix temp(_rows, m._cols);
     for (size_t i = 0; i < _rows; ++i)
     {
         for (size_t j = 0; j < _cols; ++j)
         {
-            for (size_t k = 0; k < _rows; ++k)
+            for (size_t k = 0; k < _cols; ++k)
             {
                 temp._data[i][j] += _data[i][k] * m._data[k][j];
             }
