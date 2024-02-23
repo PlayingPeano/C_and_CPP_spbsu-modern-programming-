@@ -15,9 +15,10 @@ Matrix::Matrix(size_t r, size_t c)
     _rows = r;
     _cols = c;
     _data = new int *[_rows];
+    int *mem = new int[_rows * _cols];
     for (size_t i = 0; i < _rows; ++i)
     {
-        _data[i] = new int[_cols];
+        _data[i] = &mem[i * _cols];
     }
     for (size_t i = 0; i < _rows; ++i)
     {
@@ -44,9 +45,9 @@ Matrix::Matrix(const Matrix &m)
 
 Matrix::~Matrix()
 {
-    for (size_t i = 0; i < _rows; ++i)
+    if(_data != nullptr)
     {
-        delete[] _data[i];
+        delete[] _data[0];
     }
     delete[] _data;
 }
@@ -134,7 +135,7 @@ Matrix Matrix::operator*(const Matrix &m) const
     Matrix temp(_rows, m._cols);
     for (size_t i = 0; i < _rows; ++i)
     {
-        for (size_t j = 0; j < _cols; ++j)
+        for (size_t j = 0; j < m._cols; ++j)
         {
             for (size_t k = 0; k < _cols; ++k)
             {
