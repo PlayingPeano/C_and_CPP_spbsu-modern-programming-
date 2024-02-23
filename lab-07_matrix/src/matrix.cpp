@@ -79,7 +79,6 @@ void Matrix::print(FILE *f) const
     {
         throw std::invalid_argument("Failed to open file");
     }
-
     for (size_t i = 0; i < _rows; ++i)
     {
         for (size_t j = 0; j < _cols; ++j)
@@ -88,6 +87,7 @@ void Matrix::print(FILE *f) const
         }
         fprintf(f, "\n");
     }
+    fclose(f);
 }
 
 Matrix Matrix::operator+(const Matrix &m) const
@@ -201,8 +201,12 @@ bool Matrix::operator!=(const Matrix &m) const
     return !(*this == m);
 }
 
-Matrix Matrix::operator=(const Matrix &m)
+Matrix &Matrix::operator=(const Matrix &m)
 {
+    if (this == &m)
+    {
+        return *this;
+    }
     Matrix temp(m);
     swap(*this, temp);
     return *this;

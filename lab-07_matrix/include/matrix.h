@@ -20,7 +20,7 @@ public:
   Matrix operator-(const Matrix& m) const;
   Matrix operator*(const Matrix& m) const;
   Matrix operator*(int x) const;
-  Matrix operator=(const Matrix &m);
+  Matrix &operator=(const Matrix &m);
 
   Matrix& operator+=(const Matrix& m);
   Matrix& operator-=(const Matrix& m);
