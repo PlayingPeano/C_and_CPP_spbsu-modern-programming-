@@ -94,6 +94,10 @@ void Matrix::print(FILE *f) const
             {
                 fprintf(f, "%d ", _data[i][j]);
             }
+            else
+            {
+                fprintf(f, "%d", _data[i][j]);
+            }
         }
         if (i < _rows)
         {
