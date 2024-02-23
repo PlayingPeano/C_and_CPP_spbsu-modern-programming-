@@ -8,6 +8,7 @@ public:
   friend void swap(Matrix &a, Matrix &b);
   Matrix(size_t r, size_t c);
   Matrix(const Matrix& m);
+  ~Matrix();
 
   size_t get_rows() const;
   size_t get_cols() const;

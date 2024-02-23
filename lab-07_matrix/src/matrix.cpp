@@ -36,6 +36,15 @@ Matrix::Matrix(const Matrix &m)
     swap(*this, temp);
 }
 
+Matrix::~Matrix()
+{
+    for (size_t i = 0; i < _rows; ++i)
+    {
+        delete[] _data[i];
+    }
+    delete[] _data;
+}
+
 size_t Matrix::get_rows() const
 {
     return _rows;
