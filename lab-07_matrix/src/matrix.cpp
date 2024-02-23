@@ -90,7 +90,7 @@ void Matrix::print(FILE *f) const
     {
         for (size_t j = 0; j < _cols; ++j)
         {
-            if (j < _cols)
+            if (j != _cols - 1)
             {
                 fprintf(f, "%d ", _data[i][j]);
             }
@@ -99,7 +99,7 @@ void Matrix::print(FILE *f) const
                 fprintf(f, "%d", _data[i][j]);
             }
         }
-        if (i < _rows)
+        if (i != _rows - 1)
         {
             fprintf(f, "\n");
         }
