@@ -15,9 +15,17 @@ Matrix::Matrix(size_t r, size_t c)
     _rows = r;
     _cols = c;
     _data = new int *[_rows];
+    int *mem = new int[_rows * _cols];
     for (size_t i = 0; i < _rows; ++i)
     {
-        _data[i] = new int[_cols];
+        _data[i] = &mem[i * _cols];
+    }
+    for (size_t i = 0; i < _rows; ++i)
+    {
+        for (size_t j = 0; j < _cols; ++j)
+        {
+            _data[i][j] = 0;
+        }
     }
 }
 
