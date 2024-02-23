@@ -18,7 +18,8 @@ public:
   Matrix operator+(const Matrix& m) const;
   Matrix operator-(const Matrix& m) const;
   Matrix operator*(const Matrix& m) const;
-  Matrix operator*(const int x) const;
+  Matrix operator*(int x) const;
+  Matrix operator=(const Matrix &m);
 
   Matrix& operator+=(const Matrix& m);
   Matrix& operator-=(const Matrix& m);
@@ -26,6 +27,7 @@ public:
 
   bool operator==(const Matrix& m) const;
   bool operator!=(const Matrix& m) const;
+
 
 private:
   size_t _rows{};

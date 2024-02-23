@@ -1,4 +1,4 @@
-CFLAGS = -Wno-implicit-function-declaration -I./include -Wall -Wextra -Werror -g -std=c++17
+CFLAGS = -I./include -Wall -Wextra -Werror -g -std=c++17
 SRC = src
 OBJ = obj
 PROGRAM = lab-07_matrix

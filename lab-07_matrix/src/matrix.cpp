@@ -131,7 +131,7 @@ Matrix Matrix::operator*(const Matrix &m) const
     return temp;
 }
 
-Matrix Matrix::operator*(const int x) const
+Matrix Matrix::operator*(int x) const
 {
     Matrix temp(*this);
     for (size_t i = 0; i < _rows; ++i)
@@ -190,4 +190,11 @@ bool Matrix::operator==(const Matrix &m) const
 bool Matrix::operator!=(const Matrix &m) const
 {
     return !(*this == m);
+}
+
+Matrix Matrix::operator=(const Matrix &m)
+{
+    Matrix temp(m);
+    swap(*this, temp);
+    return *this;
 }
