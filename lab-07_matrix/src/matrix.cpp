@@ -45,6 +45,10 @@ Matrix::Matrix(const Matrix &m)
 
 Matrix::~Matrix()
 {
+    if(_data != nullptr)
+    {
+        delete[] _data[0];
+    }
     delete[] _data;
 }
 
