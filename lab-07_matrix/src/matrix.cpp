@@ -88,10 +88,13 @@ void Matrix::print(FILE *f) const
     }
     for (size_t i = 0; i < _rows; ++i)
     {
-        fprintf(f, "\n");
         for (size_t j = 0; j < _cols; ++j)
         {
             fprintf(f, "%d ", _data[i][j]);
+        }
+        if (i < _rows)
+        {
+            fprintf(f, "\n");
         }
     }
 }
