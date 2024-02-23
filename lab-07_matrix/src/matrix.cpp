@@ -127,7 +127,7 @@ Matrix Matrix::operator-(const Matrix &m) const
         throw std::invalid_argument("Matrices have different sizes");
     }
 
-    return (*this) * (-1) + m;
+    return *this + m * (-1);
 }
 
 
@@ -179,12 +179,12 @@ Matrix &Matrix::operator+=(const Matrix &m)
 
 Matrix &Matrix::operator-=(const Matrix &m)
 {
-    return (*this += m * (-1));
+    return *this += m * (-1);
 }
 
 Matrix &Matrix::operator*=(const Matrix &m)
 {
-    Matrix temp((*this) * m);
+    Matrix temp(*this * m);
     swap(*this, temp);
     return *this;
 }
