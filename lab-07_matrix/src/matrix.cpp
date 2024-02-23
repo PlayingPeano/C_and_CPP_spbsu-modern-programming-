@@ -15,10 +15,9 @@ Matrix::Matrix(size_t r, size_t c)
     _rows = r;
     _cols = c;
     _data = new int *[_rows];
-    int *mem = new int[_rows * _cols];
     for (size_t i = 0; i < _rows; ++i)
     {
-        _data[i] = &mem[i * _cols];
+        _data[i] = new int[_cols];
     }
 }
 
@@ -87,7 +86,6 @@ void Matrix::print(FILE *f) const
         }
         fprintf(f, "\n");
     }
-    fclose(f);
 }
 
 Matrix Matrix::operator+(const Matrix &m) const
