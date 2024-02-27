@@ -111,7 +111,7 @@ Matrix Matrix::signedSum(const Matrix &host, const Matrix &m, bool sign)
     {
         for (size_t j = 0; j < host._cols; ++j)
         {
-            temp._data[i][j] += m._data[i][j] * (int) (sign);
+            temp._data[i][j] += m._data[i][j] * (sign ? -1 : 1);
         }
     }
     return temp;
