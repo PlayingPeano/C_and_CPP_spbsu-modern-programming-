@@ -5,7 +5,6 @@
 
 class Matrix {
 public:
-  friend void swap(Matrix &a, Matrix &b);
   Matrix(size_t r, size_t c);
   Matrix(const Matrix& m);
   ~Matrix();
@@ -34,4 +33,6 @@ private:
   size_t _rows{};
   size_t _cols{};
   int **_data{};
+  static void swap(Matrix &a, Matrix &b);
+  static Matrix signedSum(const Matrix &host, const Matrix &m, bool sign);
 };

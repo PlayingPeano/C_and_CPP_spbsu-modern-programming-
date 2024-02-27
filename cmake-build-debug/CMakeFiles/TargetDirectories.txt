@@ -1,0 +1,3 @@
+/Users/mi/Documents/GitHub/C++:C_course/labs-isaenkov/cmake-build-debug/CMakeFiles/labs_isaenkov.dir
+/Users/mi/Documents/GitHub/C++:C_course/labs-isaenkov/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/mi/Documents/GitHub/C++:C_course/labs-isaenkov/cmake-build-debug/CMakeFiles/rebuild_cache.dir

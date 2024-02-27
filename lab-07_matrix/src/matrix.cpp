@@ -3,7 +3,7 @@
 #include "fstream"
 #include "algorithm"
 
-void swap(Matrix &a, Matrix &b)
+void Matrix::swap(Matrix &a, Matrix &b)
 {
     std::swap(a._rows, b._rows);
     std::swap(a._cols, b._cols);
@@ -29,18 +29,15 @@ Matrix::Matrix(size_t r, size_t c)
     }
 }
 
-Matrix::Matrix(const Matrix &m)
+Matrix::Matrix(const Matrix &m) : Matrix(m._rows, m._cols)
 {
-    Matrix temp(m._rows, m._cols);
     for (size_t i = 0; i < m._rows; ++i)
     {
         for (size_t j = 0; j < m._cols; ++j)
         {
-            temp._data[i][j] = m._data[i][j];
+            _data[i][j] = m._data[i][j];
         }
     }
-
-    swap(*this, temp);
 }
 
 Matrix::~Matrix()
@@ -102,34 +99,33 @@ void Matrix::print(FILE *f) const
     }
 }
 
-Matrix Matrix::operator+(const Matrix &m) const
+Matrix Matrix::signedSum(const Matrix &host, const Matrix &m, bool sign)
 {
-    if (_rows != m._rows || _cols != m._cols)
+    if (host._rows != m._rows || host._cols != m._cols)
     {
         throw std::invalid_argument("Matrices have different sizes");
     }
 
-    Matrix temp(*this);
-    for (size_t i = 0; i < _rows; ++i)
+    Matrix temp(host);
+    for (size_t i = 0; i < host._rows; ++i)
     {
-        for (size_t j = 0; j < _cols; ++j)
+        for (size_t j = 0; j < host._cols; ++j)
         {
-            temp._data[i][j] += m._data[i][j];
+            temp._data[i][j] += m._data[i][j] * (int) (sign);
         }
     }
     return temp;
 }
 
-Matrix Matrix::operator-(const Matrix &m) const
+Matrix Matrix::operator+(const Matrix &m) const
 {
-    if (_rows != m._rows || _cols != m._cols)
-    {
-        throw std::invalid_argument("Matrices have different sizes");
-    }
-
-    return *this + m * (-1);
+    return signedSum(*this, m, false);
 }
 
+Matrix Matrix::operator-(const Matrix &m) const
+{
+    return signedSum(*this, m, true);
+}
 
 Matrix Matrix::operator*(const Matrix &m) const
 {
