@@ -42,24 +42,21 @@ shared_ptr::shared_ptr(const shared_ptr &other)
     storage_->incr();
 }
 
-shared_ptr &shared_ptr::operator=(shared_ptr other)
+shared_ptr &shared_ptr::operator=(const shared_ptr &other)
 {
     if (this != &other)
     {
-        this->~shared_ptr();
+        processTheDeletion();
         storage_ = other.storage_;
         storage_->incr();
     }
     return *this;
+
 }
 
 shared_ptr::~shared_ptr()
 {
-    storage_->decr();
-    if (storage_->getCounter() <= 0)
-    {
-        delete storage_;
-    }
+    processTheDeletion();
 }
 
 Matrix *shared_ptr::ptr() const
@@ -74,7 +71,7 @@ bool shared_ptr::isNull() const
 
 void shared_ptr::reset(Matrix *obj)
 {
-    this->~shared_ptr();
+    processTheDeletion();
     storage_ = new Storage(obj);
 }
 
@@ -91,4 +88,13 @@ Matrix &shared_ptr::operator*() const
         throw std::runtime_error("Attempted to dereference a nullptr\n");
     }
     return *ptr();
+}
+
+void shared_ptr::processTheDeletion()
+{
+    storage_->decr();
+    if (storage_->getCounter() <= 0)
+    {
+        delete storage_;
+    }
 }
