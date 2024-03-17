@@ -10,7 +10,7 @@ Scheme::Scheme(int capacity)
 }
 Scheme::~Scheme()
 {
-    for (size_t i = 0; i < capacity_; ++i)
+    for (size_t i = 0; i < size_; ++i)
     {
         delete figures_[i];
     }
@@ -43,6 +43,7 @@ void Scheme::remove_figure(int id)
         swap(figures_[i], figures_[i + 1]);
     }
     delete figures_[size_ - 1];
+    --size_;
 }
 
 void Scheme::print_all_figures()
