@@ -38,12 +38,17 @@ void Scheme::swap(Figure*& a, Figure*& b)
 
 void Scheme::remove_figure(int id)
 {
-    for (size_t i = id - 1; i < size_ - 1; ++i)
+    int targetIndex = getIndexById(id);
+    if (targetIndex == -1)
+    {
+        throw std::invalid_argument("There is no such element!");
+    }
+
+    for (size_t i = targetIndex; i < size_ - 1; ++i)
     {
         swap(figures_[i], figures_[i + 1]);
     }
     delete figures_[size_ - 1];
-    figures_[size_ - 1] = nullptr;
     --size_;
 }
 
@@ -57,7 +62,13 @@ void Scheme::print_all_figures()
 
 void Scheme::zoom_figure(int id, int factor)
 {
-    figures_[id - 1]->zoom(factor);
+    int targetIndex = getIndexById(id);
+    if (targetIndex == -1)
+    {
+        throw std::invalid_argument("There is no such element!");
+    }
+
+    figures_[targetIndex]->zoom(factor);
 }
 
 Figure* Scheme::is_inside_figure(int x, int y)
@@ -74,6 +85,23 @@ Figure* Scheme::is_inside_figure(int x, int y)
 
 void Scheme::move(int id, int new_x, int new_y)
 {
-    figures_[id - 1]->move(new_x, new_y);
+    int targetIndex = getIndexById(id);
+    if (targetIndex == -1)
+    {
+        throw std::invalid_argument("There is no such element!");
+    }
+
+    figures_[targetIndex]->move(new_x, new_y);
 }
 
+int Scheme::getIndexById(int id) const
+{
+    for (size_t i = 0; i < size_; ++i)
+    {
+        if (figures_[i]->getId() == id)
+        {
+            return i;
+        }
+    }
+    return -1;
+}

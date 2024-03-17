@@ -21,4 +21,5 @@ private:
     size_t capacity_;
     Figure** figures_; // размер массива задается в конструкторе и больше не растет
     void swap(Figure*& a, Figure*& b);
+    int getIndexById(int id) const;
 };
