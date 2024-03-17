@@ -2,10 +2,7 @@
 #include <iostream>
 
 Circle::Circle(int id, int x, int y, int radius, const char* label) : Figure(id, x, y), radius(radius), label(label) {}
-Circle::~Circle()
-{
-    delete[] label;
-}
+Circle::~Circle() {}
 
 void Circle::print() const
 {
