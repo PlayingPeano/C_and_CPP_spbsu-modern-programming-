@@ -38,8 +38,7 @@ void Scheme::swap(Figure*& a, Figure*& b)
 
 void Scheme::remove_figure(int id)
 {
-    --id;
-    for (size_t i = id; i < size_ - 1; ++i)
+    for (size_t i = id - 1; i < size_ - 1; ++i)
     {
         swap(figures_[i], figures_[i + 1]);
     }
@@ -57,8 +56,7 @@ void Scheme::print_all_figures()
 
 void Scheme::zoom_figure(int id, int factor)
 {
-    --id;
-    figures_[id]->zoom(factor);
+    figures_[id - 1]->zoom(factor);
 }
 
 Figure* Scheme::is_inside_figure(int x, int y)
@@ -75,7 +73,6 @@ Figure* Scheme::is_inside_figure(int x, int y)
 
 void Scheme::move(int id, int new_x, int new_y)
 {
-    --id;
-    figures_[id]->move(new_x, new_y);
+    figures_[id - 1]->move(new_x, new_y);
 }
 
