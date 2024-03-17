@@ -12,7 +12,7 @@ void Rectangle::print() const
 
 bool Rectangle::is_inside(int x, int y) const
 {
-    return abs(this->x - x) <= width && abs(this->y - y) <= height;
+    return 2 * abs(this->x - x) <= width && 2 * abs(this->y - y) <= height;
 }
 
 void Rectangle::zoom(int factor)
