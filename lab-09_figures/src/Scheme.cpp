@@ -43,6 +43,7 @@ void Scheme::remove_figure(int id)
         swap(figures_[i], figures_[i + 1]);
     }
     delete figures_[size_ - 1];
+    figures_[size_ - 1] = nullptr;
     --size_;
 }
 

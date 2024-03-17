@@ -3,7 +3,7 @@
 #include <cmath>
 
 Rectangle::Rectangle(int id, int x, int y, int width, int height) : Figure(id, x, y), width(width), height(height) {}
-Rectangle::~Rectangle() {}
+Rectangle::~Rectangle() = default;
 
 void Rectangle::print() const 
 {
