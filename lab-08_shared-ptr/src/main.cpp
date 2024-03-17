@@ -1,5 +1,4 @@
 #include "shared_ptr.hpp"
-
 #include <iostream>
 #include <cassert>
 #include <string>

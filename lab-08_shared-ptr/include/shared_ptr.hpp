@@ -16,7 +16,7 @@ public:
 	/**
 	 * Присваивает умному указателю новое значение, корректно меняя владение с одного объекта на другой.
 	 */
-    shared_ptr& operator=(shared_ptr other);
+    shared_ptr& operator=(const shared_ptr& other);
     ~shared_ptr();
 
 	/**
@@ -54,4 +54,5 @@ private:
 
 private:
     Storage *storage_;
+    void processTheDeletion();
 };
