@@ -17,6 +17,6 @@ bool Rectangle::is_inside(int x, int y) const
 
 void Rectangle::zoom(int factor)
 {
-    x *= factor;
-    y *= factor;
+    height *= factor;
+    width *= factor;
 }
