@@ -7,7 +7,9 @@ Rectangle::~Rectangle() = default;
 
 void Rectangle::print() const 
 {
-    std::cout << "Rectangle " << id << ": x = " << x << " y = " << y << " width = " << width << " height = " << height << std::endl;
+    std::cout << "Rectangle ";
+    Figure::print();
+    std::cout << " width = " << width << " height = " << height << std::endl;
 }
 
 bool Rectangle::is_inside(int x, int y) const

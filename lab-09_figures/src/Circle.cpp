@@ -14,7 +14,9 @@ Circle::~Circle()
 
 void Circle::print() const
 {
-    std::cout << "Circle " << id << ": x = " << x << " y = " << y << " radius = " << radius << " label = " << label << std::endl;
+    std::cout << "Circle ";
+    Figure::print();
+    std::cout << " radius = " << radius << " label = " << label << std::endl;
 }
 
 bool Circle::is_inside(int x, int y) const
