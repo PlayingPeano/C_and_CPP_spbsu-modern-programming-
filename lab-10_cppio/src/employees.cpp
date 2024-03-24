@@ -154,14 +154,14 @@ namespace Employee
 
     EmployeesArray::EmployeesArray()
     {
-        _employees = std::vector<std::unique_ptr<Employee>>();
+        _employees = std::vector<Employee*>();
     }
 
     EmployeesArray::~EmployeesArray()
     {
         for (auto &employeePtr: _employees)
         {
-            employeePtr.reset();
+            delete employeePtr;
         }
     }
 
