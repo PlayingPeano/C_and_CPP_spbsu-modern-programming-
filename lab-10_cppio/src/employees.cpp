@@ -154,7 +154,7 @@ namespace Employee
 
     EmployeesArray::EmployeesArray()
     {
-        _employees = std::vector<Employee *>();
+        _employees = std::vector<Employee*>();
     }
 
     EmployeesArray::~EmployeesArray()
@@ -175,25 +175,15 @@ namespace Employee
         return total;
     }
 
-//    std::ostream &operator<<(std::ostream &out, const EmployeesArray &employees_array)
-//    {
-//        int num = 1;
-//        for (const auto &employee: employees_array._employees)
-//        {
-//            out << num++ << ". " << *(employee);
-//        }
-//
-//        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
-//        return out;
-//    }
-
-    std::ostream &operator<<(std::ostream &out, const EmployeesArray &arr)
+    std::ostream &operator<<(std::ostream &out, const EmployeesArray &employees_array)
     {
-        for (size_t i = 0; i < arr._employees.size(); ++i)
+        int num = 1;
+        for (const auto &employee: employees_array._employees)
         {
-            out << i + 1 << ". " << *arr._employees[i];
+            out << num++ << ". " << *(employee);
         }
-        out << "== Total salary: " << arr.total_salary() << std::endl << std::endl;
+
+        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
         return out;
     }
 
