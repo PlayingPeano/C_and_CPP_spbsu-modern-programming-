@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    auto *employee_array = new Employee::EmployeesArray();
+    std::unique_ptr<Employee::EmployeesArray> employee_array(new Employee::EmployeesArray());
     std::string input;
     bool stop = false;
 
@@ -48,6 +48,5 @@ int main(int argc, char *argv[])
             std::cout << *employee_array;
         }
     }
-    delete employee_array;
     return EXIT_SUCCESS;
 }

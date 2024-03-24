@@ -161,7 +161,7 @@ namespace Employee
     {
         for (auto &employeePtr: _employees)
         {
-            delete employeePtr;
+            employeePtr.reset();
         }
     }
 

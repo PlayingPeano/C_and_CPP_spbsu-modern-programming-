@@ -100,6 +100,6 @@ namespace Employee
         friend std::ifstream &operator>>(std::ifstream &in, EmployeesArray &employees_array);
 
     private:
-        std::vector<Employee*> _employees;
+        std::vector<std::unique_ptr<Employee>> _employees;
     };
 }
