@@ -226,14 +226,12 @@ namespace Employee
 
     std::ifstream &operator>>(std::ifstream &in, EmployeesArray &employees_array)
     {
-        std::string name;
-        std::int32_t base_salary;
         std::int32_t n;
         if (!(in >> bin_manip::read_le_int32(n)))
         {
             throw std::invalid_argument("No number of employees was specified.");
         }
-        for (size_t i = 0; i < n; ++i)
+        for (size_t i = 0; i < static_cast<size_t>(n); ++i)
         {
             std::int32_t type;
             if (!(in >> bin_manip::read_le_int32(type)))

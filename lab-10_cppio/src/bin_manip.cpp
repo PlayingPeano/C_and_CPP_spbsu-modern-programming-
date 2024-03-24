@@ -12,7 +12,7 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_le_int32 &manip_type)
     {
-        for (int i = 0; i < sizeof(manip_type.value); i++)
+        for (size_t i = 0; i < sizeof(manip_type.value); i++)
         {
             out.put(static_cast<char>(manip_type.value >> (8 * i) & 0xff));
         }
