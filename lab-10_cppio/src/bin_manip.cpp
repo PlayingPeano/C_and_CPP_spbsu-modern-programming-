@@ -33,14 +33,20 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type)
     {
-        const char *beg = manip_type.value.c_str();
-        std::int32_t i = 0;
-        do
+        for (char ch : manip_type.value)
         {
-            out << *(beg + i);
-        } while (*(beg + i++) != '\0');
+            out.put(ch);
+        }
 
         return out;
+//        const char *beg = manip_type.value.c_str();
+//        std::int32_t i = 0;
+//        do
+//        {
+//            out << *(beg + i);
+//        } while (*(beg + i++) != '\0');
+//
+//        return out;
     }
 
     read_le_int32::read_le_int32(int32_t &value) : value(&value)
