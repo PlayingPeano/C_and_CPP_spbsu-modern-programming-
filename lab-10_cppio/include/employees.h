@@ -13,9 +13,6 @@ namespace Employee
 {
     class Employee
     {
-    protected:
-        std::string _name;
-        std::int32_t _base_salary;
     public:
 
         Employee(std::string name = "", std::int32_t base_salary = 0);
@@ -39,6 +36,10 @@ namespace Employee
         friend std::ofstream &operator<<(std::ofstream &, const Employee &);
 
         friend std::ifstream &operator>>(std::ifstream &, Employee &);
+
+    protected:
+        std::string _name;
+        std::int32_t _base_salary;
     };
 
     class Developer : public Employee
@@ -63,7 +64,8 @@ namespace Employee
     class SalesManager : public Employee
     {
     public:
-        SalesManager(std::string name = "", std::int32_t base_salary = 0, std::int32_t sold_nm = 0, std::int32_t price = 0);
+        SalesManager(std::string name = "", std::int32_t base_salary = 0, std::int32_t sold_nm = 0,
+                     std::int32_t price = 0);
 
         std::int32_t salary() const override;
 
@@ -95,11 +97,14 @@ namespace Employee
         void load(std::string str);
 
         friend std::ostream &operator<<(std::ostream &out, const EmployeesArray &employees_array);
+
         friend std::ofstream &operator<<(std::ofstream &out, const EmployeesArray &employees_array);
+
         friend std::istream &operator>>(std::istream &in, EmployeesArray &employees_array);
+
         friend std::ifstream &operator>>(std::ifstream &in, EmployeesArray &employees_array);
 
     private:
-        std::vector<Employee*> _employees;
+        std::vector<Employee *> _employees;
     };
 }
