@@ -86,7 +86,7 @@ namespace Employee
 
         EmployeesArray();
 
-        ~EmployeesArray() = default;
+        ~EmployeesArray();
 
         std::int32_t total_salary() const;
 

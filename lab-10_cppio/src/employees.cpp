@@ -157,6 +157,14 @@ namespace Employee
         _employees = std::vector<std::unique_ptr<Employee>>();
     }
 
+    EmployeesArray::~EmployeesArray()
+    {
+        for (auto &employeePtr: _employees)
+        {
+            employeePtr.reset();
+        }
+    }
+
     std::int32_t EmployeesArray::total_salary() const
     {
         std::int32_t total = 0;

@@ -48,5 +48,5 @@ int main(int argc, char *argv[])
             std::cout << *employee_array;
         }
     }
-    delete employee_array;
+    return EXIT_SUCCESS;
 }
