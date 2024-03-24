@@ -83,7 +83,7 @@ namespace Employee
 
     void Developer::write_text(std::ostream &out) const
     {
-        out << "Developer" << std::endl << "Name: " << _name << '\0' << std::endl << "Base Salary: " << _base_salary
+        out << "Developer" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
             << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
     }
 
@@ -180,7 +180,7 @@ namespace Employee
         int num = 1;
         for (const auto &employee: employees_array._employees)
         {
-            out << num++ << ". " << *(employee);
+            out << num++ << ". " << *(employee) << '\0';
         }
 
         out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
