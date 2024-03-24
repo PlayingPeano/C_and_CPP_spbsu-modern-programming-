@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    std::unique_ptr<Employee::EmployeesArray> employee_array(new Employee::EmployeesArray());
+    std::unique_ptr<Employee::EmployeesArray> employee_array = std::make_unique<Employee::EmployeesArray>();
     std::string input;
     bool stop = false;
 
