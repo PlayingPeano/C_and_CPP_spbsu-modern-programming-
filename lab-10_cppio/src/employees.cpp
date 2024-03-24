@@ -225,7 +225,7 @@ namespace Employee
         {
             throw std::invalid_argument("No number of employees was specified.");
         }
-        for (int i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
         {
             std::int32_t type;
             if (!(in >> bin_manip::read_le_int32(type)))

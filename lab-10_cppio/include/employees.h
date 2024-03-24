@@ -1,10 +1,13 @@
 #pragma once
 
+#include "employees.h"
+#include "bin_manip.h"
 #include <cstdint>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <memory>
 
 namespace Employee
 {
