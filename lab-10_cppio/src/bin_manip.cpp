@@ -36,9 +36,9 @@ namespace bin_manip
         const char *beg = manip_type.value.c_str();
         for (size_t i = 0; i < manip_type.value.size(); i++)
         {
-            out << *(beg + i);
+            out << beg[i];
         }
-
+        out << '\0';
         return out;
 //        const char *beg = manip_type.value.c_str();
 //        std::int32_t i = 0;
