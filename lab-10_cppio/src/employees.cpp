@@ -180,10 +180,10 @@ namespace Employee
         int num = 1;
         for (const auto &employee: employees_array._employees)
         {
-            out << num++ << ". " << *(employee) << '\0';
+            out << num++ << ". " << *(employee);
         }
 
-        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
+        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl << '\0';
         return out;
     }
 
