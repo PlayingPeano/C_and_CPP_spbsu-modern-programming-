@@ -84,7 +84,7 @@ namespace Employee
     void Developer::write_text(std::ostream &out) const
     {
         out << "Developer" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
-            << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
+            << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << '\0' << std::endl;
     }
 
     void Developer::read_bin(std::ifstream &in)

@@ -87,11 +87,12 @@ namespace bin_manip
         while (ch != '\0')
         {
             *manip_type.value += ch;
-
             if (!in.get(ch))
+            {
                 throw std::invalid_argument("File doesn't contain enough data.");
+            }
         }
-        *manip_type.value += '\0';
+
         return in;
     }
 }
