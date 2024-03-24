@@ -199,8 +199,6 @@ namespace Employee
 
     std::istream &operator>>(std::istream &in, EmployeesArray &employees_array)
     {
-        std::string name;
-        std::int32_t base_salary;
         int type;
         if (!(in >> type))
         {
