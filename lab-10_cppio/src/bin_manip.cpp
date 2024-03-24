@@ -33,9 +33,9 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type)
     {
-        for (char ch : manip_type.value)
+        for (size_t i = 0; i < manip_type.value.size(); i++)
         {
-            out.put(ch);
+            out.put(manip_type.value.c_str()[i]);
         }
 
         return out;
