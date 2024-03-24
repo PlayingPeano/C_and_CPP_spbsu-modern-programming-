@@ -83,8 +83,8 @@ namespace Employee
 
     void Developer::write_text(std::ostream &out) const
     {
-        out << "Developer\nName: " << _name << "\nBase Salary: " << _base_salary << "\nHas bonus: "
-            << (_has_bonus ? '+' : '-');
+        out << "Developer" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
+            << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
     }
 
     void Developer::read_bin(std::ifstream &in)
@@ -134,8 +134,9 @@ namespace Employee
 
     void SalesManager::write_text(std::ostream &out) const
     {
-        out << "Sales Manager\nName: " << _name << "\nBase Salary: " << _base_salary << "\nSold items: " << _sold_nm
-            << "\nItem price: " << _price;
+        out << "Sales Manager" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
+            << std::endl << "Sold items: " << _sold_nm << std::endl
+            << "Item price: " << _price << std::endl;
     }
 
     void SalesManager::read_bin(std::ifstream &in)
@@ -174,15 +175,25 @@ namespace Employee
         return total;
     }
 
-    std::ostream &operator<<(std::ostream &out, const EmployeesArray &employees_array)
-    {
-        int num = 1;
-        for (const auto &employee: employees_array._employees)
-        {
-            out << num++ << ". " << *employee << '\n';
-        }
+//    std::ostream &operator<<(std::ostream &out, const EmployeesArray &employees_array)
+//    {
+//        int num = 1;
+//        for (const auto &employee: employees_array._employees)
+//        {
+//            out << num++ << ". " << *(employee);
+//        }
+//
+//        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
+//        return out;
+//    }
 
-        out << "== Total salary: " << employees_array.total_salary() << "\n\n";
+    std::ostream &operator<<(std::ostream &out, const EmployeesArray &arr)
+    {
+        for (size_t i = 0; i < arr._employees.size(); ++i)
+        {
+            out << i + 1 << ". " << *arr._employees[i];
+        }
+        out << "== Total salary: " << arr.total_salary() << std::endl << std::endl;
         return out;
     }
 
