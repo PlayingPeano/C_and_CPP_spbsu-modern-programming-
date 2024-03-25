@@ -84,7 +84,7 @@ namespace Employee
     void Developer::write_text(std::ostream &out) const
     {
         out << "Developer" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
-            << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
+            << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-");
     }
 
     void Developer::read_bin(std::ifstream &in)
@@ -136,7 +136,7 @@ namespace Employee
     {
         out << "Sales Manager" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
             << std::endl << "Sold items: " << _sold_nm << std::endl
-            << "Item price: " << _price << std::endl;
+            << "Item price: " << _price;
     }
 
     void SalesManager::read_bin(std::ifstream &in)
@@ -180,10 +180,10 @@ namespace Employee
         int num = 1;
         for (const auto &employee: employees_array._employees)
         {
-            out << num++ << ". " << *(employee);
+            out << num++ << ". " << *(employee) << std::endl;
         }
 
-        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
+        out << "== Total salary: " << employees_array.total_salary() << std::endl;
         return out;
     }
 
