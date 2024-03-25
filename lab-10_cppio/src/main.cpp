@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
         if (input == "exit")
         {
             stop = true;
-            std::cout << std::endl;
         }
         else if (input == "load")
         {
