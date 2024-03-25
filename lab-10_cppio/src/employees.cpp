@@ -182,7 +182,6 @@ namespace Employee
         {
             out << num++ << ". " << *(employee) << std::endl;
         }
-
         out << "== Total salary: " << employees_array.total_salary() << std::endl;
         return out;
     }
