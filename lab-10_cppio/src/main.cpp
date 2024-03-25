@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         }
         else if (input == "list")
         {
-            std::cout << *employee_array;
+            std::cout << *employee_array << std::endl;
         }
     }
     delete employee_array;
