@@ -16,7 +16,10 @@ int main(int argc, char *argv[])
         std::cin >> input;
 
         if (input == "exit")
+        {
             stop = true;
+            std::cout << std::endl;
+        }
         else if (input == "load")
         {
             std::string fileName;
