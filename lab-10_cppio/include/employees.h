@@ -17,7 +17,7 @@ namespace Employee
 
         Employee(std::string name = "", std::int32_t base_salary = 0);
 
-        virtual ~Employee() = default;
+        virtual ~Employee();
 
         virtual std::int32_t salary() const = 0;
 

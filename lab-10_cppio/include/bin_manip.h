@@ -9,8 +9,6 @@
 
 namespace bin_manip
 {
-    const std::int32_t MAX_NAME_LENGTH = 200;
-
     class write_le_int32
     {
     private:
@@ -34,9 +32,9 @@ namespace bin_manip
     class write_c_string
     {
     private:
-        char value[MAX_NAME_LENGTH];
+        std::string value;
     public:
-        explicit write_c_string(const char *value);
+        explicit write_c_string(std::string value);
 
         friend std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type);
     };
@@ -64,12 +62,10 @@ namespace bin_manip
     class read_c_string
     {
     private:
-        char *value;
-        size_t size;
-
+        std::string *value;
     public:
-        read_c_string(char *s, size_t size);
+        explicit read_c_string(std::string &value);
 
-        friend std::istream &operator>>(std::istream &in, const read_c_string &manip_type);
+        friend std::istream &operator>>(std::istream &in, read_c_string manip_type);
     };
 }
