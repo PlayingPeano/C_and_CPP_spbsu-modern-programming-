@@ -42,7 +42,7 @@ namespace bin_manip
         {
             out << ch;
         }
-
+        out << '\0';
 
         return out;
     }
@@ -87,20 +87,16 @@ namespace bin_manip
 
     std::istream &operator>>(std::istream &in, read_c_string manip_type)
     {
-        if (!getline(in, *manip_type.value))
+        char ch;
+        in.get(ch);
+        while (ch != '\0')
         {
-            throw std::invalid_argument("File doesn't contain enough data.");
+            *manip_type.value += ch;
+            if (!in.get(ch))
+            {
+                throw std::invalid_argument("File doesn't contain enough data.");
+            }
         }
-//        char ch;
-//        in.get(ch);
-//        while (ch != '\0')
-//        {
-//            *manip_type.value += ch;
-//            if (!in.get(ch))
-//            {
-//                throw std::invalid_argument("File doesn't contain enough data.");
-//            }
-//        }
 
         return in;
     }
