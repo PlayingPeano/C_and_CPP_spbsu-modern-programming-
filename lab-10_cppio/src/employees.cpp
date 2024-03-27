@@ -34,7 +34,7 @@ namespace Employee
 
     void Employee::read_bin(std::ifstream &in)
     {
-
+        in >> bin_manip::read_c_string(_name) >> bin_manip::read_le_int32(_base_salary);
     }
 
     void Employee::write_text(std::ostream &out) const
@@ -44,7 +44,7 @@ namespace Employee
 
     void Employee::write_bin(std::ofstream &out) const
     {
-
+        out << bin_manip::write_c_string(_name) << bin_manip::write_le_int32(_base_salary);
     }
 
     std::ostream &operator<<(std::ostream &out, const Employee &employee)
@@ -105,14 +105,15 @@ namespace Employee
 
     void Developer::read_bin(std::ifstream &in)
     {
-        in >> bin_manip::read_c_string(_name) >> bin_manip::read_le_int32(_base_salary)
-           >> bin_manip::read_bool(_has_bonus);
+        Employee::read_bin(in);
+        in >> bin_manip::read_bool(_has_bonus);
     }
 
     void Developer::write_bin(std::ofstream &out) const
     {
-        out << bin_manip::write_le_int32(1) << bin_manip::write_c_string(_name)
-            << bin_manip::write_le_int32(_base_salary) << bin_manip::write_bool(_has_bonus);
+        out << bin_manip::write_le_int32(1);
+        Employee::write_bin(out);
+        out << bin_manip::write_bool(_has_bonus);
     }
 
     SalesManager::SalesManager(std::string name, std::int32_t base_salary, std::int32_t sold_nm,
@@ -160,15 +161,15 @@ namespace Employee
 
     void SalesManager::read_bin(std::ifstream &in)
     {
-        in >> bin_manip::read_c_string(_name) >> bin_manip::read_le_int32(_base_salary)
-           >> bin_manip::read_le_int32(_sold_nm) >> bin_manip::read_le_int32(_price);
+        Employee::read_bin(in);
+        in >> bin_manip::read_le_int32(_sold_nm) >> bin_manip::read_le_int32(_price);
     }
 
     void SalesManager::write_bin(std::ofstream &out) const
     {
-        out << bin_manip::write_le_int32(2) << bin_manip::write_c_string(_name)
-            << bin_manip::write_le_int32(_base_salary)
-            << bin_manip::write_le_int32(_sold_nm) << bin_manip::write_le_int32(_price);
+        out << bin_manip::write_le_int32(2);
+        Employee::write_bin(out);
+        out << bin_manip::write_le_int32(_sold_nm) << bin_manip::write_le_int32(_price);
     }
 
     EmployeesArray::EmployeesArray()
