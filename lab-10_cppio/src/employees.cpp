@@ -12,13 +12,7 @@ namespace Employee
     Employee::Employee(std::string name, std::int32_t base_salary) : _name(std::move(name)), _base_salary(base_salary)
     {}
 
-    std::ostream &operator<<(std::ostream &out, const Employee &employee)
-    {
-        employee.write_text(out);
-        return out;
-    }
-
-    std::istream &operator>>(std::istream &in, Employee &employee)
+    void Employee::read_text(std::istream &in)
     {
         std::string name;
         int32_t base_salary;
@@ -35,10 +29,34 @@ namespace Employee
             throw std::invalid_argument("No base salary was specified.");
         }
 
-        employee.read_text(in);
+        _base_salary = base_salary;
+        _name = name;
+    }
 
-        employee._base_salary = base_salary;
-        employee._name = name;
+    void Employee::read_bin(std::ifstream &in)
+    {
+
+    }
+
+    void Employee::write_text(std::ostream &out) const
+    {
+
+    }
+
+    void Employee::write_bin(std::ofstream &out) const
+    {
+
+    }
+
+    std::ostream &operator<<(std::ostream &out, const Employee &employee)
+    {
+        employee.write_text(out);
+        return out;
+    }
+
+    std::istream &operator>>(std::istream &in, Employee &employee)
+    {
+        employee.read_text(in);
 
         return in;
     }
@@ -55,9 +73,6 @@ namespace Employee
         return in;
     }
 
-
-    Employee::~Employee() = default;
-
     Developer::Developer(std::string name, std::int32_t base_salary, bool has_bonus) : Employee(std::move(name),
                                                                                                 base_salary),
                                                                                        _has_bonus(has_bonus)
@@ -70,8 +85,9 @@ namespace Employee
 
     void Developer::read_text(std::istream &in)
     {
-        bool has_bonus;
+        this->Employee::read_text(in);
 
+        bool has_bonus;
         in >> has_bonus;
         if (in.fail())
         {
@@ -191,7 +207,7 @@ namespace Employee
         out << bin_manip::write_le_int32(static_cast<std::int32_t>(employees_array._employees.size()));
         for (const auto &employee: employees_array._employees)
         {
-            out << *employee;
+            out << *(employee);
         }
         return out;
     }
