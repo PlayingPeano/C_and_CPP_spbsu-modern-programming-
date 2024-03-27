@@ -37,9 +37,9 @@ namespace bin_manip
         return out;
     }
 
-    write_c_string::write_c_string(const char *s)
+    write_c_string::write_c_string(const char *value)
     {
-        strcpy(value, s);
+        strcpy(this->value, value);
     }
 
     std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type)
