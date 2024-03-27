@@ -43,7 +43,7 @@ namespace Employee
 
     void Employee::write_text(std::ostream &out) const
     {
-        out << _name.c_str() << std::endl << "Base Salary: " << _base_salary;
+        out << "Name: " << _name.c_str() << std::endl << "Base Salary: " << _base_salary  << std::endl;
     }
 
     void Employee::write_bin(std::ofstream &out) const
@@ -54,6 +54,7 @@ namespace Employee
     std::ostream &operator<<(std::ostream &out, const Employee &employee)
     {
         employee.write_text(out);
+
         return out;
     }
 
@@ -67,12 +68,14 @@ namespace Employee
     std::ofstream &operator<<(std::ofstream &out, const Employee &employee)
     {
         employee.write_bin(out);
+
         return out;
     }
 
     std::ifstream &operator>>(std::ifstream &in, Employee &employee)
     {
         employee.read_bin(in);
+
         return in;
     }
 
@@ -102,9 +105,9 @@ namespace Employee
 
     void Developer::write_text(std::ostream &out) const
     {
-        out << "Developer" << std::endl << "Name: ";
+        out << "Developer" << std::endl;
         Employee::write_text(out);
-        out << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
+        out << "Has bonus: " << (_has_bonus ? "+" : "-");
     }
 
     void Developer::read_bin(std::ifstream &in)
@@ -157,10 +160,10 @@ namespace Employee
 
     void SalesManager::write_text(std::ostream &out) const
     {
-        out << "Sales Manager" << std::endl << "Name: ";
+        out << "Sales Manager" << std::endl;
         Employee::write_text(out);
-        out << std::endl << "Sold items: " << _sold_nm << std::endl
-            << "Item price: " << _price << std::endl;
+        out << "Sold items: " << _sold_nm << std::endl
+            << "Item price: " << _price;
     }
 
     void SalesManager::read_bin(std::ifstream &in)
@@ -204,9 +207,9 @@ namespace Employee
         int num = 1;
         for (const auto &employee: employees_array._employees)
         {
-            out << num++ << ". " << *(employee);
+            out << num++ << ". " << *(employee) << std::endl;
         }
-        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
+        out << "== Total salary: " << employees_array.total_salary() << std::endl;
         return out;
     }
 
