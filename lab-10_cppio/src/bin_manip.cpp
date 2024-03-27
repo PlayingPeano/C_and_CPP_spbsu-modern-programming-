@@ -19,7 +19,7 @@ namespace bin_manip
         {
             out.put(static_cast<char>(manip_type.value >> (BITS_IN_ONE_BYTE * i) & BIT_MASK_256));
         }
-        out.put('\0');
+
         return out;
     }
 
@@ -29,7 +29,7 @@ namespace bin_manip
     std::ostream &operator<<(std::ostream &out, const write_bool &manip_type)
     {
         out.put(manip_type.value ? '1' : '0');
-        out.put('\0');
+
         return out;
     }
 
@@ -42,7 +42,7 @@ namespace bin_manip
         {
             out << ch;
         }
-        out << '\0';
+        
 
         return out;
     }
