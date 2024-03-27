@@ -28,7 +28,8 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_bool &manip_type)
     {
-        out.put(manip_type.value ? '1' : '0');
+        char byte = manip_type.value ? 1 : 0;
+        out.write(&byte, 1);
 
         return out;
     }
