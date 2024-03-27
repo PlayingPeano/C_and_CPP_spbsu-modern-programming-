@@ -25,7 +25,6 @@ namespace Employee
         in >> base_salary;
         if (in.fail())
         {
-
             throw std::invalid_argument("No base salary was specified.");
         }
 
@@ -130,6 +129,8 @@ namespace Employee
 
     void SalesManager::read_text(std::istream &in)
     {
+        this->Employee::read_text(in);
+
         std::int32_t sold_nm;
         std::int32_t price;
 
