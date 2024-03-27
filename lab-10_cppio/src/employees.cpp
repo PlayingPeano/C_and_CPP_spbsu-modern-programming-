@@ -39,7 +39,7 @@ namespace Employee
 
     void Employee::write_text(std::ostream &out) const
     {
-
+        out << _name << std::endl << "Base Salary: " << _base_salary;
     }
 
     void Employee::write_bin(std::ofstream &out) const
@@ -84,7 +84,7 @@ namespace Employee
 
     void Developer::read_text(std::istream &in)
     {
-        this->Employee::read_text(in);
+        Employee::read_text(in);
 
         bool has_bonus;
         in >> has_bonus;
@@ -98,8 +98,9 @@ namespace Employee
 
     void Developer::write_text(std::ostream &out) const
     {
-        out << "Developer" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
-            << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
+        out << "Developer" << std::endl << "Name: ";
+        Employee::write_text(out);
+        out << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
     }
 
     void Developer::read_bin(std::ifstream &in)
@@ -129,7 +130,7 @@ namespace Employee
 
     void SalesManager::read_text(std::istream &in)
     {
-        this->Employee::read_text(in);
+        Employee::read_text(in);
 
         std::int32_t sold_nm;
         std::int32_t price;
@@ -151,8 +152,9 @@ namespace Employee
 
     void SalesManager::write_text(std::ostream &out) const
     {
-        out << "Sales Manager" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
-            << std::endl << "Sold items: " << _sold_nm << std::endl
+        out << "Sales Manager" << std::endl << "Name: ";
+        Employee::write_text(out);
+        out << std::endl << "Sold items: " << _sold_nm << std::endl
             << "Item price: " << _price << std::endl;
     }
 
