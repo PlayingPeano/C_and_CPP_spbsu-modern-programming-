@@ -61,9 +61,9 @@ namespace bin_manip
         {
             std::cerr << "Failed while reading!" << exception.what() << std::endl;
         }
-        *(manip_type.value) = ((unsigned char) bytes[3] << 3 * BITS_IN_ONE_BYTE) |
-                              ((unsigned char) bytes[2] << 2 * BITS_IN_ONE_BYTE) |
-                              ((unsigned char) bytes[1] << BITS_IN_ONE_BYTE) | (unsigned char) bytes[0];
+        *(manip_type.value) = ((unsigned char) bytes[3] << 3 * BITS_IN_ONE_BYTE) +
+                              ((unsigned char) bytes[2] << 2 * BITS_IN_ONE_BYTE) +
+                              ((unsigned char) bytes[1] << BITS_IN_ONE_BYTE) + (unsigned char) bytes[0];
 
         return in;
     }
