@@ -5,12 +5,11 @@
 #include <memory>
 #include <cstring>
 
-const std::int32_t BITS_IN_ONE_BYTE = 8;
-const std::int32_t BIT_MASK_256 = 0xFF;
-
-
 namespace bin_manip
 {
+    const std::int32_t BITS_IN_ONE_BYTE = 8;
+    const std::int32_t BIT_MASK_256 = 0xFF;
+    
     write_le_int32::write_le_int32(std::int32_t value) : value(value)
     {}
 
@@ -89,22 +88,27 @@ namespace bin_manip
         return in;
     }
 
-    read_c_string::read_c_string(std::string &value) : value(&value)
+    read_c_string::read_c_string(char *s, size_t size) : value(s), size(size)
     {}
 
-    std::istream &operator>>(std::istream &in, read_c_string manip_type)
+    std::istream &operator>>(std::istream &in, const read_c_string &manip_type)
     {
-        char ch;
-        in.get(ch);
-        while (ch != '\0')
+        size_t i = 0;
+        while (in.get(manip_type.value[i]) && i < manip_type.size)
         {
-            *manip_type.value += ch;
-            if (!in.get(ch))
+            if (manip_type.value[i] == 0)
             {
-                throw std::invalid_argument("File doesn't contain enough data.");
+                break;
             }
+            ++i;
         }
-
+        if (i >= manip_type.size && manip_type.value[i - 1] != 0)
+        {
+            std::string exceptionMessage =
+                    "Format exception: expected to have at most " + std::to_string(manip_type.size) +
+                    " characters in a file";
+            throw std::invalid_argument(exceptionMessage);
+        }
         return in;
     }
 }

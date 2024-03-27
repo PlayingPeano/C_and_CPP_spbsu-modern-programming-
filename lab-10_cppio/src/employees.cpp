@@ -9,6 +9,8 @@
 
 namespace Employee
 {
+    const std::int32_t MAX_NAME_LENGTH = 200;
+
     Employee::Employee(std::string name, std::int32_t base_salary) : _name(std::move(name)), _base_salary(base_salary)
     {}
 
@@ -34,7 +36,9 @@ namespace Employee
 
     void Employee::read_bin(std::ifstream &in)
     {
-        in >> bin_manip::read_c_string(_name) >> bin_manip::read_le_int32(_base_salary);
+        char name[MAX_NAME_LENGTH];
+        in >> bin_manip::read_c_string(name, sizeof(name)) >> bin_manip::read_le_int32(_base_salary);
+        _name = name;
     }
 
     void Employee::write_text(std::ostream &out) const

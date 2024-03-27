@@ -64,10 +64,12 @@ namespace bin_manip
     class read_c_string
     {
     private:
-        std::string *value;
-    public:
-        explicit read_c_string(std::string &value);
+        char *value;
+        size_t size;
 
-        friend std::istream &operator>>(std::istream &in, read_c_string manip_type);
+    public:
+        read_c_string(char *s, size_t size);
+
+        friend std::istream &operator>>(std::istream &in, const read_c_string &manip_type);
     };
 }
