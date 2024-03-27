@@ -34,7 +34,7 @@ namespace Employee
 
     void Employee::read_bin(std::ifstream &in)
     {
-        in >> bin_manip::read_c_string((char *)(&_name), _name.size()) >> bin_manip::read_le_int32(_base_salary);
+        in >> bin_manip::read_c_string(_name) >> bin_manip::read_le_int32(_base_salary);
     }
 
     void Employee::write_text(std::ostream &out) const

@@ -4,8 +4,8 @@
 #include <exception>
 #include <memory>
 
-const int32_t BITS_IN_ONE_BYTE = 8;
-const int32_t BIT_MASK_256 = 0xFF;
+const std::int32_t BITS_IN_ONE_BYTE = 8;
+const std::int32_t BIT_MASK_256 = 0xFF;
 
 
 namespace bin_manip
@@ -23,7 +23,6 @@ namespace bin_manip
         out.write(bytes, 4);
 
         return out;
-
     }
 
     write_bool::write_bool(bool value) : value(value)
@@ -42,7 +41,7 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type)
     {
-        out.write(manip_type.value.c_str(), static_cast<std::streamsize>(manip_type.value.size() + 1));
+        out.write(manip_type.value.c_str(), (manip_type.value.size() + 1));
 
         return out;
     }
@@ -87,28 +86,22 @@ namespace bin_manip
         return in;
     }
 
-    read_c_string::read_c_string(char *s, size_t size) : value(s), size(size)
+    read_c_string::read_c_string(std::string &value) : value(&value)
     {}
 
-    std::istream &operator>>(std::istream &in, const read_c_string &manip_type)
+    std::istream &operator>>(std::istream &in, read_c_string manip_type)
     {
-        size_t i = 0;
-        while (in.get(manip_type.value[i]) && i < manip_type.size)
+        char ch;
+        in.get(ch);
+        while (ch != '\0')
         {
-            if (manip_type.value[i] == 0)
+            *manip_type.value += ch;
+            if (!in.get(ch))
             {
-                break;
+                throw std::invalid_argument("File doesn't contain enough data.");
             }
-            ++i;
         }
-        if (i >= manip_type.size && manip_type.value[i - 1] != 0)
-        {
-            std::string exceptionMessage =
-                    "Format exception: expected to have at most " + std::to_string(manip_type.size) +
-                    " characters in a file";
-            throw std::invalid_argument(exceptionMessage);
-        }
-        return in;
 
+        return in;
     }
 }
