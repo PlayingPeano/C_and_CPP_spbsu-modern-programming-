@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Figure.hpp"
+#include <cstdlib>
 
 class Scheme {
 public:
@@ -16,7 +17,9 @@ public:
     void move(int id, int new_x, int new_y);
 
 private:
-    // ...
-
+    size_t size_;
+    size_t capacity_;
     Figure** figures_; // размер массива задается в конструкторе и больше не растет
+    void swap(Figure*& a, Figure*& b);
+    int getIndexById(int id) const;
 };
