@@ -63,8 +63,8 @@ namespace bin_manip
             std::cerr << "Failed while reading!" << exception.what() << std::endl;
         }
         *(manip_type.value) = ((unsigned char) bytes[3] << 3 * BITS_IN_ONE_BYTE) |
-                            ((unsigned char) bytes[2] << 2 * BITS_IN_ONE_BYTE) |
-                            ((unsigned char) bytes[1] << BITS_IN_ONE_BYTE) | (unsigned char) bytes[0];
+                              ((unsigned char) bytes[2] << 2 * BITS_IN_ONE_BYTE) |
+                              ((unsigned char) bytes[1] << BITS_IN_ONE_BYTE) | (unsigned char) bytes[0];
 
         return in;
     }
@@ -74,12 +74,16 @@ namespace bin_manip
 
     std::istream &operator>>(std::istream &in, read_bool manip_type)
     {
-        char ch;
-        if (!in.get(ch))
+        char byte;
+        try
         {
-            throw std::invalid_argument("File doesn't contain enough data.");
+            in.read(&byte, 1);
         }
-        *manip_type.value = ch & 1;
+        catch (std::ios_base::failure &exception)
+        {
+            std::cerr << "Failed while reading!" << exception.what() << std::endl;
+        }
+        *manip_type.value = byte & 1;
 
         return in;
     }
