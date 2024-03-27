@@ -39,7 +39,7 @@ namespace Employee
 
     void Employee::write_text(std::ostream &out) const
     {
-        out << _name << '\0' << std::endl << "Base Salary: " << _base_salary;
+        out << _name.c_str() << std::endl << "Base Salary: " << _base_salary;
     }
 
     void Employee::write_bin(std::ofstream &out) const
