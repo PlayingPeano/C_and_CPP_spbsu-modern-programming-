@@ -32,9 +32,9 @@ namespace bin_manip
     class write_c_string
     {
     private:
-        std::string value;
+        char* value;
     public:
-        explicit write_c_string(std::string value);
+        explicit write_c_string(const char s[]);
 
         friend std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type);
     };

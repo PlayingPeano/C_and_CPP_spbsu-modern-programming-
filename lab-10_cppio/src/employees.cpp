@@ -39,12 +39,12 @@ namespace Employee
 
     void Employee::write_text(std::ostream &out) const
     {
-        out << _name << std::endl << "Base Salary: " << _base_salary;
+        out << _name.c_str() << std::endl << "Base Salary: " << _base_salary;
     }
 
     void Employee::write_bin(std::ofstream &out) const
     {
-        out << bin_manip::write_c_string(_name) << bin_manip::write_le_int32(_base_salary);
+        out << bin_manip::write_c_string(_name.c_str()) << bin_manip::write_le_int32(_base_salary);
     }
 
     std::ostream &operator<<(std::ostream &out, const Employee &employee)
