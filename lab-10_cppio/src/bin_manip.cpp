@@ -15,12 +15,15 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_le_int32 &manip_type)
     {
-        for (size_t i = 0; i < sizeof(manip_type.value); ++i)
-        {
-            out.put((manip_type.value >> (BITS_IN_ONE_BYTE * i) & BIT_MASK_256));
-        }
+        char bytes[4];
+        bytes[0] = manip_type.value & BIT_MASK_256;
+        bytes[1] = (manip_type.value >> BITS_IN_ONE_BYTE) & BIT_MASK_256;
+        bytes[2] = (manip_type.value >> 2 * BITS_IN_ONE_BYTE) & BIT_MASK_256;
+        bytes[3] = (manip_type.value >> 3 * BITS_IN_ONE_BYTE) & BIT_MASK_256;
+        out.write(bytes, 4);
 
         return out;
+
     }
 
     write_bool::write_bool(bool value) : value(value)
