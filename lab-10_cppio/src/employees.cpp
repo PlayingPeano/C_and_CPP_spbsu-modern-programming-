@@ -9,16 +9,12 @@
 
 namespace Employee
 {
+    const std::int32_t MAX_NAME_LENGTH = 200;
+
     Employee::Employee(std::string name, std::int32_t base_salary) : _name(std::move(name)), _base_salary(base_salary)
     {}
 
-    std::ostream &operator<<(std::ostream &out, const Employee &employee)
-    {
-        employee.write_text(out);
-        return out;
-    }
-
-    std::istream &operator>>(std::istream &in, Employee &employee)
+    void Employee::read_text(std::istream &in)
     {
         std::string name;
         int32_t base_salary;
@@ -31,14 +27,40 @@ namespace Employee
         in >> base_salary;
         if (in.fail())
         {
-
             throw std::invalid_argument("No base salary was specified.");
         }
 
-        employee.read_text(in);
+        _base_salary = base_salary;
+        _name = name;
+    }
 
-        employee._base_salary = base_salary;
-        employee._name = name;
+    void Employee::read_bin(std::ifstream &in)
+    {
+        char name[MAX_NAME_LENGTH];
+        in >> bin_manip::read_c_string(name, sizeof(name)) >> bin_manip::read_le_int32(_base_salary);
+        _name = name;
+    }
+
+    void Employee::write_text(std::ostream &out) const
+    {
+        out << "Name: " << _name.c_str() << std::endl << "Base Salary: " << _base_salary << std::endl;
+    }
+
+    void Employee::write_bin(std::ofstream &out) const
+    {
+        out << bin_manip::write_c_string(_name.c_str()) << bin_manip::write_le_int32(_base_salary);
+    }
+
+    std::ostream &operator<<(std::ostream &out, const Employee &employee)
+    {
+        employee.write_text(out);
+
+        return out;
+    }
+
+    std::istream &operator>>(std::istream &in, Employee &employee)
+    {
+        employee.read_text(in);
 
         return in;
     }
@@ -46,17 +68,16 @@ namespace Employee
     std::ofstream &operator<<(std::ofstream &out, const Employee &employee)
     {
         employee.write_bin(out);
+
         return out;
     }
 
     std::ifstream &operator>>(std::ifstream &in, Employee &employee)
     {
         employee.read_bin(in);
+
         return in;
     }
-
-
-    Employee::~Employee() = default;
 
     Developer::Developer(std::string name, std::int32_t base_salary, bool has_bonus) : Employee(std::move(name),
                                                                                                 base_salary),
@@ -70,8 +91,9 @@ namespace Employee
 
     void Developer::read_text(std::istream &in)
     {
-        bool has_bonus;
+        Employee::read_text(in);
 
+        bool has_bonus;
         in >> has_bonus;
         if (in.fail())
         {
@@ -83,20 +105,22 @@ namespace Employee
 
     void Developer::write_text(std::ostream &out) const
     {
-        out << "Developer" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
-            << std::endl << "Has bonus: " << (_has_bonus ? "+" : "-") << std::endl;
+        out << "Developer" << std::endl;
+        Employee::write_text(out);
+        out << "Has bonus: " << (_has_bonus ? "+" : "-");
     }
 
     void Developer::read_bin(std::ifstream &in)
     {
-        in >> bin_manip::read_c_string(_name) >> bin_manip::read_le_int32(_base_salary)
-           >> bin_manip::read_bool(_has_bonus);
+        Employee::read_bin(in);
+        in >> bin_manip::read_bool(_has_bonus);
     }
 
     void Developer::write_bin(std::ofstream &out) const
     {
-        out << bin_manip::write_le_int32(1) << bin_manip::write_c_string(_name)
-            << bin_manip::write_le_int32(_base_salary) << bin_manip::write_bool(_has_bonus);
+        out << bin_manip::write_le_int32(1);
+        Employee::write_bin(out);
+        out << bin_manip::write_bool(_has_bonus);
     }
 
     SalesManager::SalesManager(std::string name, std::int32_t base_salary, std::int32_t sold_nm,
@@ -114,6 +138,8 @@ namespace Employee
 
     void SalesManager::read_text(std::istream &in)
     {
+        Employee::read_text(in);
+
         std::int32_t sold_nm;
         std::int32_t price;
 
@@ -134,22 +160,23 @@ namespace Employee
 
     void SalesManager::write_text(std::ostream &out) const
     {
-        out << "Sales Manager" << std::endl << "Name: " << _name << std::endl << "Base Salary: " << _base_salary
-            << std::endl << "Sold items: " << _sold_nm << std::endl
-            << "Item price: " << _price << std::endl;
+        out << "Sales Manager" << std::endl;
+        Employee::write_text(out);
+        out << "Sold items: " << _sold_nm << std::endl
+            << "Item price: " << _price;
     }
 
     void SalesManager::read_bin(std::ifstream &in)
     {
-        in >> bin_manip::read_c_string(_name) >> bin_manip::read_le_int32(_base_salary)
-           >> bin_manip::read_le_int32(_sold_nm) >> bin_manip::read_le_int32(_price);
+        Employee::read_bin(in);
+        in >> bin_manip::read_le_int32(_sold_nm) >> bin_manip::read_le_int32(_price);
     }
 
     void SalesManager::write_bin(std::ofstream &out) const
     {
-        out << bin_manip::write_le_int32(2) << bin_manip::write_c_string(_name)
-            << bin_manip::write_le_int32(_base_salary)
-            << bin_manip::write_le_int32(_sold_nm) << bin_manip::write_le_int32(_price);
+        out << bin_manip::write_le_int32(2);
+        Employee::write_bin(out);
+        out << bin_manip::write_le_int32(_sold_nm) << bin_manip::write_le_int32(_price);
     }
 
     EmployeesArray::EmployeesArray()
@@ -180,9 +207,9 @@ namespace Employee
         int num = 1;
         for (const auto &employee: employees_array._employees)
         {
-            out << num++ << ". " << *(employee);
+            out << num++ << ". " << *(employee) << std::endl;
         }
-        out << "== Total salary: " << employees_array.total_salary() << std::endl << std::endl;
+        out << "== Total salary: " << employees_array.total_salary() << std::endl;
         return out;
     }
 
@@ -191,7 +218,7 @@ namespace Employee
         out << bin_manip::write_le_int32(static_cast<std::int32_t>(employees_array._employees.size()));
         for (const auto &employee: employees_array._employees)
         {
-            out << *employee;
+            out << *(employee);
         }
         return out;
     }
