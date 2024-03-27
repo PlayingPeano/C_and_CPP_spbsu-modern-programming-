@@ -4,6 +4,9 @@
 #include <exception>
 #include <memory>
 
+const int32_t BITS_IN_ONE_BYTE = 8;
+const int32_t BIT_MASK_256 = 0xFF;
+
 
 namespace bin_manip
 {
@@ -14,7 +17,7 @@ namespace bin_manip
     {
         for (size_t i = 0; i < sizeof(manip_type.value); ++i)
         {
-            out.put(static_cast<char>(manip_type.value >> (8 * i) & 0xff));
+            out.put(static_cast<char>(manip_type.value >> (BITS_IN_ONE_BYTE * i) & BIT_MASK_256));
         }
         return out;
     }
@@ -25,6 +28,7 @@ namespace bin_manip
     std::ostream &operator<<(std::ostream &out, const write_bool &manip_type)
     {
         out.put(manip_type.value ? '1' : '0');
+        out.put('\0');
         return out;
     }
 
@@ -33,7 +37,7 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type)
     {
-        for (char ch: manip_type.value)
+        for (unsigned char ch: manip_type.value)
         {
             out << ch;
         }
@@ -49,13 +53,13 @@ namespace bin_manip
     {
         std::int32_t x = 0;
         char ch = 0;
-        for (int i = 0; i < 4; ++i)
+        for (size_t i = 0; i < 4; ++i)
         {
             if (!in.get(ch))
             {
                 throw std::invalid_argument("File doesn't contain enough data.");
             }
-            x |= ((unsigned char) ch & 0xFF) << (8 * i);
+            x |= ((unsigned char) ch & BIT_MASK_256) << (BITS_IN_ONE_BYTE * i);
         }
         *manip_type.value = x;
 
