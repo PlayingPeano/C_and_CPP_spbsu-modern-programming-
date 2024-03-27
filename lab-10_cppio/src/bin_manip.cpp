@@ -17,7 +17,7 @@ namespace bin_manip
     {
         for (size_t i = 0; i < sizeof(manip_type.value); ++i)
         {
-            out.put(static_cast<char>(manip_type.value >> (BITS_IN_ONE_BYTE * i) & BIT_MASK_256));
+            out.put((manip_type.value >> (BITS_IN_ONE_BYTE * i) & BIT_MASK_256));
         }
 
         return out;
@@ -53,16 +53,17 @@ namespace bin_manip
     std::istream &operator>>(std::istream &in, read_le_int32 manip_type)
     {
         std::int32_t x = 0;
-        char ch = 0;
-        for (size_t i = 0; i < 4; ++i)
+        char bytes[4];
+        try
         {
-            if (!in.get(ch))
-            {
-                throw std::invalid_argument("File doesn't contain enough data.");
-            }
-            x |= ((unsigned char) ch & BIT_MASK_256) << (BITS_IN_ONE_BYTE * i);
+            in.read(bytes, 4);
         }
-        *manip_type.value = x;
+        catch (std::ios_base::failure &exception)
+        {
+            std::cerr << "Failed while reading!" << exception.what() << std::endl;
+        }
+        *manip_type.value = (bytes[3] << 3 * BITS_IN_ONE_BYTE) | (bytes[2] << 2 * BITS_IN_ONE_BYTE) |
+                            (bytes[1] << BITS_IN_ONE_BYTE) | bytes[0];
 
         return in;
     }
