@@ -39,11 +39,7 @@ namespace bin_manip
 
     std::ostream &operator<<(std::ostream &out, const write_c_string &manip_type)
     {
-        for (unsigned char ch: manip_type.value)
-        {
-            out << ch;
-        }
-        out << '\0';
+        out.write(manip_type.value.c_str(), static_cast<std::streamsize>(manip_type.value.size() + 1));
 
         return out;
     }
@@ -83,7 +79,7 @@ namespace bin_manip
         {
             std::cerr << "Failed while reading!" << exception.what() << std::endl;
         }
-        *manip_type.value = byte & 1;
+        *manip_type.value = byte;
 
         return in;
     }
