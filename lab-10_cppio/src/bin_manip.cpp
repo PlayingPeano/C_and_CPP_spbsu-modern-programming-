@@ -19,6 +19,7 @@ namespace bin_manip
         {
             out.put(static_cast<char>(manip_type.value >> (BITS_IN_ONE_BYTE * i) & BIT_MASK_256));
         }
+        out.put('\0');
         return out;
     }
 
