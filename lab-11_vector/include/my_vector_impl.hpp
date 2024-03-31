@@ -111,7 +111,7 @@ namespace containers
             size_ = copiedArray.size_;
             for (std::size_t i = 0; i < copiedArray.size_; ++i)
             {
-                new(&array_[i]) T(std::move(copiedArray.array_[i]));
+                new(&array_[i]) T(copiedArray.array_[i]);
             }
         }
     }
@@ -130,7 +130,7 @@ namespace containers
     void my_vector<T>::push_back(T t)
     {
         enlarge_without_default_constructor(size_ + 1);
-        new(&array_[size_ - 1]) T(std::move(t));
+        new(&array_[size_ - 1]) T(t);
     }
 
     template<typename T>
