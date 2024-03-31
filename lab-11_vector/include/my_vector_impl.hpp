@@ -56,7 +56,12 @@ namespace containers
     template<typename T>
     my_vector<T> &my_vector<T>::operator=(containers::my_vector<T> other)
     {
-        swap(other);
+        size_ = other.size_;
+        capacity_ = other.capacity_;
+        for (std::size_t i = 0; i < other.size_; ++i)
+        {
+            array_[i] = other.array_[i];
+        }
         return *this;
     }
 
