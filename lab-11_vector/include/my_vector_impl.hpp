@@ -49,7 +49,7 @@ namespace containers
         array_ = ((T*)(new char[(other.capacity_ * sizeof(T))]));
         for (std::size_t i = 0; i < other.size_; ++i)
         {
-            array_[i] = other.array_[i];
+            new(&array_[i]) T(other.array_[i]);
         }
     }
 
@@ -111,7 +111,7 @@ namespace containers
             size_ = copiedArray.size_;
             for (std::size_t i = 0; i < copiedArray.size_; ++i)
             {
-                array_[i] = copiedArray.array_[i];
+                new(&array_[i]) T(std::move(copiedArray.array_[i]));
             }
         }
     }
@@ -130,7 +130,7 @@ namespace containers
     void my_vector<T>::push_back(T t)
     {
         enlarge_without_default_constructor(size_ + 1);
-        array_[size_ - 1] = t;
+        new(&array_[size_ - 1]) T(std::move(t));
     }
 
     template<typename T>
@@ -176,7 +176,7 @@ namespace containers
     {
         my_vector<T> copiedArray(*this);
         clear();
-        delete [](char*)array_;
+        operator delete []((char*)array_);
         return copiedArray;
     }
 
@@ -194,7 +194,7 @@ namespace containers
         size_ = n;
         for (std::size_t i = 0; i < copiedArray.size_; ++i)
         {
-            array_[i] = copiedArray.array_[i];
+            new(&array_[i]) T(copiedArray.array_[i]);
         }
     }
 } // namespace containers
