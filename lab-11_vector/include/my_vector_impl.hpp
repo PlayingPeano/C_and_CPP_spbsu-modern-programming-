@@ -146,7 +146,7 @@ namespace containers
     template<typename T>
     void my_vector<T>::clear()
     {
-        for (std::size_t i = 0; i < size_; ++i)
+        for (std::size_t i = 0; i < capacity_; ++i)
         {
             array_[i].~T();
         }
