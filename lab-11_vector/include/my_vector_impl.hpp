@@ -20,7 +20,7 @@ namespace help_functions
             n >>= 1;
             ++count;
         }
-        return (1 << (count - 1));
+        return (1 << (count - 2));
     }
 } // namespace help_functions
 
