@@ -24,7 +24,7 @@ namespace containers
 {
     template<typename T>
     my_vector<T>::my_vector() : capacity_(1), size_(0),
-                                array_((T*)(operator new[](capacity_ * sizeof(T))))
+                                array_((T*)(new char[(capacity_ * sizeof(T))]))
     {}
 
     template<typename T>
@@ -42,7 +42,7 @@ namespace containers
     template<typename T>
     my_vector<T>::my_vector(const containers::my_vector<T> &other) : capacity_(other.capacity_), size_(other.size_)
     {
-        array_ = (T*)(operator new[](other.capacity_ * sizeof(T)));
+        array_ = ((T*)(new char[(other.capacity_ * sizeof(T))]));
         for (std::size_t i = 0; i < other.size_; ++i)
         {
             array_[i] = other.array_[i];
@@ -60,7 +60,7 @@ namespace containers
     my_vector<T>::~my_vector()
     {
         clear();
-        delete (void*)array_;
+        delete (char*)array_;
     }
 
     template<typename T>
@@ -102,7 +102,7 @@ namespace containers
         if (n > capacity_)
         {
             my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
-            array_ = (T*)(operator new[](n * sizeof(T)));
+            array_ = (T*)(new char[(n * sizeof(T))]);
             capacity_ = n;
             size_ = copiedArray.size_;
             for (std::size_t i = 0; i < copiedArray.size_; ++i)
@@ -172,7 +172,7 @@ namespace containers
     {
         my_vector<T> copiedArray(*this);
         clear();
-        delete (void*)array_;
+        delete (char*)array_;
         return copiedArray;
     }
 
@@ -185,7 +185,7 @@ namespace containers
             return;
         }
         my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
-        array_ = (T*)(operator new[](n * sizeof(T)));
+        array_ = (T*)(new char[(n * sizeof(T))]);
         capacity_ = help_functions::upper_bound_by_power_of_two(n);
         size_ = n;
         for (std::size_t i = 0; i < copiedArray.size_; ++i)
