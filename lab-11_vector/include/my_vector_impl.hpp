@@ -23,8 +23,8 @@ namespace help_functions
 namespace containers
 {
     template<typename T>
-    my_vector<T>::my_vector() : capacity_(0), size_(0),
-                                array_(nullptr)
+    my_vector<T>::my_vector() : capacity_(1), size_(0),
+                                array_((T*)(operator new[](capacity_ * sizeof(T))))
     {}
 
     template<typename T>
