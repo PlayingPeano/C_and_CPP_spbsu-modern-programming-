@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <cstring>
 #include "my_vector.hpp"
 
 namespace product
@@ -23,7 +23,7 @@ namespace product
         return os;
     }
 
-    Product::Product(const char *name, int quantity, double price) : name_(new char[strlen(name) + 1]),
+    Product::Product(const char *name, int quantity, double price) : name_(new char[std::strlen(name) + 1]),
                                                                      quantity_(quantity), price_(price)
     {}
 }  // namespace product
