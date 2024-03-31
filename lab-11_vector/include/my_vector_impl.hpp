@@ -10,13 +10,17 @@ namespace help_functions
 {
     int upper_bound_by_power_of_two(std::size_t n)
     {
+        if ((n & (n - 1)) == 0)
+        {
+            return n;
+        }
         int count = 0;
         while (n)
         {
             n >>= 1;
             ++count;
         }
-        return (1 << count);
+        return (1 << (count + 1));
     }
 } // namespace help_functions
 
