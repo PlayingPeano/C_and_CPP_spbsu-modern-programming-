@@ -8,6 +8,7 @@ namespace product
     {
     public:
         Product(const char *name, int quantity, double price);
+        ~Product();
 
         friend std::ostream &operator<<(std::ostream &os, const Product &product);
 
@@ -26,6 +27,11 @@ namespace product
     Product::Product(const char *name, int quantity, double price) : name_(new char[std::strlen(name) + 1]),
                                                                      quantity_(quantity), price_(price)
     {}
+
+    Product::~Product()
+    {
+        delete[] name_;
+    }
 }  // namespace product
 
 namespace test_my_vector
