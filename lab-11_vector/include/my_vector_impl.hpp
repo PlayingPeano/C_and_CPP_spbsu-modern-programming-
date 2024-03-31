@@ -42,7 +42,7 @@ namespace containers
     template<typename T>
     my_vector<T>::my_vector(const containers::my_vector<T> &other) : capacity_(other.capacity_), size_(other.size_)
     {
-        array_ = static_cast<T *>(operator new[](other.capacity_ * sizeof(T)));
+        array_ = (T*)(operator new[](other.capacity_ * sizeof(T)));
         for (std::size_t i = 0; i < other.size_; ++i)
         {
             array_[i] = other.array_[i];
@@ -60,7 +60,7 @@ namespace containers
     my_vector<T>::~my_vector()
     {
         clear();
-        delete array_;
+        delete (char*)array_;
     }
 
     template<typename T>
@@ -101,8 +101,8 @@ namespace containers
     {
         if (n > capacity_)
         {
-            my_vector<T> copiedArray = std::move(return_copy_of_my_vector_and_delete_array());
-            array_ = static_cast<T *>(operator new[](n * sizeof(T)));
+            my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
+            array_ = (T*)(operator new[](n * sizeof(T)));
             capacity_ = n;
             size_ = copiedArray.size_;
             for (std::size_t i = 0; i < copiedArray.size_; ++i)
@@ -142,7 +142,7 @@ namespace containers
     template<typename T>
     void my_vector<T>::clear()
     {
-        for (std::size_t i = 0; i < capacity_; ++i)
+        for (std::size_t i = 0; i < size_; ++i)
         {
             array_[i].~T();
         }
@@ -172,7 +172,7 @@ namespace containers
     {
         my_vector<T> copiedArray(*this);
         clear();
-        delete array_;
+        delete (char*)array_;
         return copiedArray;
     }
 
@@ -184,8 +184,8 @@ namespace containers
             size_ = n;
             return;
         }
-        my_vector<T> copiedArray = std::move(return_copy_of_my_vector_and_delete_array());
-        array_ = static_cast<T *>(operator new[](n * sizeof(T)));
+        my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
+        array_ = (T*)(operator new[](n * sizeof(T)));
         capacity_ = help_functions::upper_bound_by_power_of_two(n);
         size_ = n;
         for (std::size_t i = 0; i < copiedArray.size_; ++i)

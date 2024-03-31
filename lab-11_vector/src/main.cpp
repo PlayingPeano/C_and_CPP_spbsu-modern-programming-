@@ -7,10 +7,15 @@ namespace product
     class Product
     {
     public:
+        Product(const Product &product);
+
         Product(const char *name, int quantity, double price);
+
         ~Product();
 
         friend std::ostream &operator<<(std::ostream &os, const Product &product);
+
+        Product &operator=(const Product &product);
 
     private:
         char *name_;
@@ -24,13 +29,31 @@ namespace product
         return os;
     }
 
+    Product &Product::operator=(const Product &product)
+    {
+        quantity_ = product.quantity_;
+        price_ = product.price_;
+        name_ = new char[std::strlen(product.name_) + 1];
+        std::strcpy(name_, product.name_);
+        return *this;
+    }
+
     Product::Product(const char *name, int quantity, double price) : name_(new char[std::strlen(name) + 1]),
                                                                      quantity_(quantity), price_(price)
-    {}
+    {
+        std::strcpy(name_, name);
+    }
 
     Product::~Product()
     {
         delete[] name_;
+    }
+
+    Product::Product(const Product &product) : name_(new char[std::strlen(product.name_) + 1]),
+                                               quantity_(product.quantity_),
+                                               price_(product.price_)
+    {
+        std::strcpy(name_, product.name_);
     }
 }  // namespace product
 
