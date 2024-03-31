@@ -28,7 +28,7 @@ namespace containers
 {
     template<typename T>
     my_vector<T>::my_vector() : capacity_(1), size_(0),
-                                array_((T*)(new char[(capacity_ * sizeof(T))]))
+                                array_((T*)(new char[(1 * sizeof(T))]))
     {}
 
     template<typename T>
