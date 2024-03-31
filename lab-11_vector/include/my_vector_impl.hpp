@@ -8,7 +8,7 @@
 
 namespace help_functions
 {
-    int upper_bound_by_power_of_two(std::size_t n)
+    std::size_t upper_bound_by_power_of_two(std::size_t n)
     {
         if ((n & (n - 1)) == 0)
         {
@@ -20,7 +20,7 @@ namespace help_functions
             n >>= 1;
             ++count;
         }
-        return (1 << (count + 1));
+        return (1 << (count - 1));
     }
 } // namespace help_functions
 
@@ -64,7 +64,7 @@ namespace containers
     my_vector<T>::~my_vector()
     {
         clear();
-        delete [](void*)array_;
+        delete [](char*)array_;
     }
 
     template<typename T>
@@ -176,7 +176,7 @@ namespace containers
     {
         my_vector<T> copiedArray(*this);
         clear();
-        delete [](void*)array_;
+        delete [](char*)array_;
         return copiedArray;
     }
 
