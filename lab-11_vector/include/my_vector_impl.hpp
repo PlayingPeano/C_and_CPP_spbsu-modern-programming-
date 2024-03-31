@@ -60,7 +60,7 @@ namespace containers
     my_vector<T>::~my_vector()
     {
         clear();
-        delete (void*)array_;
+        delete [](char*)array_;
     }
 
     template<typename T>
@@ -172,7 +172,7 @@ namespace containers
     {
         my_vector<T> copiedArray(*this);
         clear();
-        delete (void*)array_;
+        delete [](char*)array_;
         return copiedArray;
     }
 
