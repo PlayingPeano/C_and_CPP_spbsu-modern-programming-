@@ -97,12 +97,24 @@ namespace containers
         {
             throw std::bad_alloc();
         }
-        size_t oldSize = size_;
+        if (n == size_)
+        {
+            return;
+        }
+        if(n < size_)
+        {
+            for (std::size_t i = n; i < size_; ++i)
+            {
+                array_[i].~T();
+            }
+            return;
+        }
+        std::size_t oldSize = size_;
         enlarge_without_default_constructor(n);
-//        for (std::size_t i = oldSize; i < n; ++i)
-//        {
-//            new(&array_[i]) T();
-//        }
+        for (std::size_t i = oldSize; i < n; ++i)
+        {
+            new(&array_[i]) T();
+        }
     }
 
     template<typename T>
