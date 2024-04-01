@@ -56,15 +56,7 @@ namespace containers
     template<typename T>
     my_vector<T> &my_vector<T>::operator=(containers::my_vector<T> other)
     {
-        clear();
-        size_ = other.size_;
-        capacity_ = other.capacity_;
-        delete [] (char*)array_;
-        array_ = ((T*)(new char[(other.capacity_ * sizeof(T))]));
-        for (std::size_t i = 0; i < other.size_; ++i)
-        {
-            new(&array_[i]) T(other.array_[i]);
-        }
+        swap(other);
         return *this;
     }
 
@@ -148,6 +140,7 @@ namespace containers
         {
             throw std::out_of_range("Can't pop from empty vector");
         }
+        array_[size_ - 1].~T();
         --size_;
     }
 
