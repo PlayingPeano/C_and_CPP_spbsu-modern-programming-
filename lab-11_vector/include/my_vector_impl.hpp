@@ -53,7 +53,7 @@ namespace containers
             help_functions::upper_bound_by_power_of_two(other.capacity_)), size_(other.size_)
     {
 
-        array_ = ((T *) (new char[(other.capacity_ * sizeof(T))]));
+        array_ = ((T *) (new char[(capacity_ * sizeof(T))]));
         for (std::size_t i = 0; i < other.size_; ++i)
         {
             new(&array_[i]) T(other.array_[i]);
