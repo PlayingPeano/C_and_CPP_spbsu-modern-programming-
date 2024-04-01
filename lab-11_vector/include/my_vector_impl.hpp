@@ -44,7 +44,7 @@ namespace containers
         array_ = ((T*)(new char[(capacity_ * sizeof(T))]));
         for (std::size_t i = 0; i < size_; ++i)
         {
-            new(&array_[i]) T(array_[i]);
+            new(&array_[i]) T();
         }
     }
 
