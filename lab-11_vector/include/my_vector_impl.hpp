@@ -97,16 +97,13 @@ namespace containers
         {
             throw std::bad_alloc();
         }
-        if (n == size_)
-        {
-            return;
-        }
-        if(n < size_)
+        if(n <= size_)
         {
             for (std::size_t i = n; i < size_; ++i)
             {
                 array_[i].~T();
             }
+            size_ = n;
             return;
         }
         std::size_t oldSize = size_;
