@@ -28,7 +28,7 @@ namespace containers
 {
     template<typename T>
     my_vector<T>::my_vector() : capacity_(1), size_(0),
-                                array_((T*)(new char[(1 * sizeof(T))]))
+                                array_(reinterpret_cast<T *>(operator new[](1 * sizeof(T))))
     {}
 
     template<typename T>
@@ -41,7 +41,7 @@ namespace containers
 
         capacity_ = help_functions::upper_bound_by_power_of_two(n);
         size_ = n;
-        array_ = ((T*)(new char[(capacity_ * sizeof(T))]));
+        array_ = reinterpret_cast<T *>(operator new[](capacity_ * sizeof(T)));
         for (std::size_t i = 0; i < size_; ++i)
         {
             new(&array_[i]) T();
@@ -51,7 +51,7 @@ namespace containers
     template<typename T>
     my_vector<T>::my_vector(const containers::my_vector<T> &other) : capacity_(other.capacity_), size_(other.size_)
     {
-        array_ = ((T*)(new char[(other.capacity_ * sizeof(T))]));
+        array_ = reinterpret_cast<T *>((operator new[](other.capacity_ * sizeof(T))));
         for (std::size_t i = 0; i < other.size_; ++i)
         {
             new(&array_[i]) T(other.array_[i]);
@@ -69,7 +69,7 @@ namespace containers
     my_vector<T>::~my_vector()
     {
         clear();
-        delete [](char*)array_;
+        delete[](char *) array_;
     }
 
     template<typename T>
@@ -97,7 +97,7 @@ namespace containers
         {
             throw std::bad_alloc();
         }
-        if(n <= size_)
+        if (n <= size_)
         {
             for (std::size_t i = n; i < size_; ++i)
             {
@@ -121,7 +121,7 @@ namespace containers
         {
             my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
             capacity_ = help_functions::upper_bound_by_power_of_two(n);
-            array_ = (T*)(new char[(capacity_ * sizeof(T))]);
+            array_ = reinterpret_cast<T *>(operator new[](capacity_ * sizeof(T)));
             size_ = copiedArray.size_;
             for (std::size_t i = 0; i < size_; ++i)
             {
@@ -191,7 +191,7 @@ namespace containers
     {
         my_vector<T> copiedArray(*this);
         clear();
-        operator delete []((char*)array_);
+        operator delete[]((char *) array_);
         return copiedArray;
     }
 
@@ -205,7 +205,7 @@ namespace containers
         }
         my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
         capacity_ = help_functions::upper_bound_by_power_of_two(n);
-        array_ = (T*)(operator new[](capacity_ * sizeof(T)));
+        array_ = reinterpret_cast<T *>(operator new[](capacity_ * sizeof(T)));
         size_ = n;
         for (std::size_t i = 0; i < copiedArray.size_; ++i)
         {
