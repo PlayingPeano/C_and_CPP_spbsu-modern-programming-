@@ -110,12 +110,12 @@ namespace containers
             size_ = n;
             return;
         }
-        std::size_t oldSize = size_;
-        enlarge_without_default_constructor(n);
-        for (std::size_t i = oldSize; i < n; ++i)
+        reserve(n);
+        for (std::size_t i = size_; i < n; ++i)
         {
             new(&array_[i]) T();
         }
+        size_ = n;
     }
 
     template<typename T>
