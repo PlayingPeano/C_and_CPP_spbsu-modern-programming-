@@ -154,8 +154,9 @@ namespace containers
         {
             throw std::out_of_range("Can't pop from empty vector");
         }
-        array_[size_ - 1].~T();
-        --size_;
+        resize(size_ - 1);
+//        array_[size_ - 1].~T();
+//        --size_;
     }
 
     template<typename T>
