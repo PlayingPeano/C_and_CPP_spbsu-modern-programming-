@@ -147,7 +147,12 @@ namespace containers
     template<typename T>
     void my_vector<T>::push_back(T t)
     {
-        enlarge_without_default_constructor(size_ + 1);
+//        enlarge_without_default_constructor(size_ + 1);
+        if (size_ == capacity_)
+        {
+            reserve(size_ + 1);
+        }
+        ++size_;
         new(&array_[size_ - 1]) T(t);
     }
 
