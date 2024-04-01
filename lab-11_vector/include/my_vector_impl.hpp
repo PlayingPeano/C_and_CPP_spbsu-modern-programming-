@@ -123,7 +123,7 @@ namespace containers
     {
         if (n > capacity_)
         {
-            my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
+            my_vector<T> copiedArray(return_copy_and_clear());
             capacity_ = help_functions::upper_bound_by_power_of_two(n);
             array_ = reinterpret_cast<T *>(operator new[](capacity_ * sizeof(T)));
             size_ = copiedArray.size_;
@@ -196,29 +196,11 @@ namespace containers
     }
 
     template<typename T>
-    my_vector<T> my_vector<T>::return_copy_of_my_vector_and_delete_array()
+    my_vector<T> my_vector<T>::return_copy_and_clear()
     {
         my_vector<T> copiedArray(*this);
         clear();
         operator delete[](array_);
         return copiedArray;
-    }
-
-    template<typename T>
-    void my_vector<T>::enlarge_without_default_constructor(size_t n)
-    {
-        if (n <= capacity_)
-        {
-            size_ = n;
-            return;
-        }
-        my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
-        capacity_ = help_functions::upper_bound_by_power_of_two(n);
-        array_ = reinterpret_cast<T *>(operator new[](capacity_ * sizeof(T)));
-        size_ = n;
-        for (std::size_t i = 0; i < copiedArray.size_; ++i)
-        {
-            new(&array_[i]) T(copiedArray.array_[i]);
-        }
     }
 } // namespace containers

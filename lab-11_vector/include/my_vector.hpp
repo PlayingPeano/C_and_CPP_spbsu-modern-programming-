@@ -48,9 +48,7 @@ namespace containers
 
         void swap(my_vector &other);
 
-        my_vector return_copy_of_my_vector_and_delete_array();
-
-        void enlarge_without_default_constructor(size_t n);
+        my_vector return_copy_and_clear();
     };
 }// namespace containers
 
