@@ -34,10 +34,10 @@ namespace containers
     template<typename T>
     my_vector<T>::my_vector(std::size_t n)
     {
-        if (std::is_default_constructible<T>::value == false)
-        {
-            throw std::bad_alloc();
-        }
+//        if (std::is_default_constructible<T>::value == false)
+//        {
+//            throw std::bad_alloc();
+//        }
 
         capacity_ = help_functions::upper_bound_by_power_of_two(n);
         size_ = n;
