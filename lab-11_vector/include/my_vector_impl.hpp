@@ -36,7 +36,7 @@ namespace containers
     {
         if (std::is_default_constructible<T>::value == false)
         {
-            throw std::bad_alloc();
+            throw std::logic_error("Type T is not default constructible");
         }
 
         capacity_ = help_functions::upper_bound_by_power_of_two(n);
@@ -51,6 +51,10 @@ namespace containers
     template<typename T>
     my_vector<T>::my_vector(const containers::my_vector<T> &other) : capacity_(other.capacity_), size_(other.size_)
     {
+        if (capacity_ < size_)
+        {
+            throw std::invalid_argument("Capacity can't be less than size!");
+        }
         array_ = reinterpret_cast<T *>((operator new[](other.capacity_ * sizeof(T))));
         for (std::size_t i = 0; i < other.size_; ++i)
         {
@@ -69,7 +73,7 @@ namespace containers
     my_vector<T>::~my_vector()
     {
         clear();
-        delete[](char *) array_;
+        operator delete[](array_);
     }
 
     template<typename T>
@@ -191,7 +195,7 @@ namespace containers
     {
         my_vector<T> copiedArray(*this);
         clear();
-        operator delete[]((char *) array_);
+        operator delete[](array_);
         return copiedArray;
     }
 
