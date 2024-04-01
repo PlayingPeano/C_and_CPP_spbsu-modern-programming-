@@ -121,7 +121,7 @@ namespace containers
         {
             my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
             array_ = (T*)(new char[(n * sizeof(T))]);
-            capacity_ = n;
+            capacity_ = help_functions::upper_bound_by_power_of_two(n);
             size_ = copiedArray.size_;
             for (std::size_t i = 0; i < copiedArray.size_; ++i)
             {
@@ -154,9 +154,8 @@ namespace containers
         {
             throw std::out_of_range("Can't pop from empty vector");
         }
-        resize(size_ - 1);
-//        array_[size_ - 1].~T();
-//        --size_;
+        array_[size_ - 1].~T();
+        --size_;
     }
 
     template<typename T>
