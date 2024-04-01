@@ -123,7 +123,7 @@ namespace containers
             capacity_ = help_functions::upper_bound_by_power_of_two(n);
             array_ = (T*)(new char[(capacity_ * sizeof(T))]);
             size_ = copiedArray.size_;
-            for (std::size_t i = 0; i < copiedArray.size_; ++i)
+            for (std::size_t i = 0; i < size_; ++i)
             {
                 new(&array_[i]) T(copiedArray.array_[i]);
             }
@@ -204,8 +204,8 @@ namespace containers
             return;
         }
         my_vector<T> copiedArray(return_copy_of_my_vector_and_delete_array());
-        array_ = (T*)(new char[(n * sizeof(T))]);
         capacity_ = help_functions::upper_bound_by_power_of_two(n);
+        array_ = (T*)(new char[(capacity_ * sizeof(T))]);
         size_ = n;
         for (std::size_t i = 0; i < copiedArray.size_; ++i)
         {
