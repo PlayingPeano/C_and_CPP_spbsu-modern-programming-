@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
             std::ifstream fin(filename);
             if (!fin.is_open())
             {
-                std::cout << "LOAD: unable to open file.";
+                std::cout << "LOAD: unable to open file." << std::endl;
                 continue;
             }
 
@@ -35,13 +35,13 @@ int main(int argc, char *argv[])
 
             if (fin.eof())
             {
-                std::cout << "LOAD: empty file.";
+                std::cout << "LOAD: empty file." << std::endl;
             }
             fin >> rows;
 
             if (fin.eof())
             {
-                std::cout << "LOAD: empty file.";
+                std::cout << "LOAD: empty file." << std::endl;
             }
             fin >> cols;
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
             }
             catch (matrix::MatrixException &e)
             {
-                std::cout << "LOAD: " << e.what();
+                std::cout << "LOAD: " << e.what() << std::endl;
                 continue;
             }
         }
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
             }
             catch (matrix::MatrixException &e)
             {
-                std::cout << "ADD: " << e.what();
+                std::cout << "ADD: " << e.what() << std::endl;
             }
         }
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
             }
             catch (matrix::MatrixException &e)
             {
-                std::cout << "MUL: " << e.what();
+                std::cout << "MUL: " << e.what() << std::endl;
             }
         }
 
@@ -117,11 +117,11 @@ int main(int argc, char *argv[])
             try
             {
                 int tmp = matrices[std::stoi(&reg[1])](row, col);
-                std::cout << tmp;
+                std::cout << tmp << std::endl;
             }
             catch (matrix::MatrixException &e)
             {
-                std::cout << "ACCESS: " << e.what();
+                std::cout << "ACCESS: " << e.what() << std::endl;
             }
         }
 
