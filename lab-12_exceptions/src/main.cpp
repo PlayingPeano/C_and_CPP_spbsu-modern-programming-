@@ -57,6 +57,10 @@ int main(int argc, char *argv[])
             {
                 std::cout << "LOAD: " << e.what() << std::endl;
             }
+            catch (std::bad_alloc &)
+            {
+                std::cout << "Unable to allocate memory." << std::endl;
+            }
         }
         else if (input == "print")
         {
