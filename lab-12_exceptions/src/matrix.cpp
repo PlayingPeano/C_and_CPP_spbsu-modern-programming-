@@ -5,6 +5,7 @@
 #include "fstream"
 #include "algorithm"
 #include <iostream>
+#include <limits>
 
 namespace matrix
 {
@@ -171,6 +172,11 @@ namespace matrix
             {
                 for (std::size_t k = 0; k < _cols; ++k)
                 {
+                    long long temp_val = temp._data[i][j] + _data[i][k] * m._data[k][j];
+                    if (temp_val > std::numeric_limits<int>::max() || temp_val < std::numeric_limits<int>::min())
+                    {
+                        throw std::bad_alloc();
+                    }
                     temp._data[i][j] += _data[i][k] * m._data[k][j];
                 }
             }
@@ -215,7 +221,14 @@ namespace matrix
             throw MatrixException("#arg1.columns != #arg2.rows.");
         }
 
-        Matrix temp(*this * m);
+        try
+        {
+            Matrix temp(*this * m);
+        }
+        catch (std::bad_alloc &e)
+        {
+            throw e;
+        }
         swap(*this, temp);
         return *this;
     }
