@@ -36,12 +36,14 @@ int main(int argc, char *argv[])
             if (fin.eof())
             {
                 std::cout << "LOAD: empty file." << std::endl;
+                continue;
             }
             fin >> rows;
 
             if (fin.eof())
             {
                 std::cout << "LOAD: empty file." << std::endl;
+                continue;
             }
             fin >> cols;
 
@@ -54,20 +56,16 @@ int main(int argc, char *argv[])
             catch (matrix::MatrixException &e)
             {
                 std::cout << "LOAD: " << e.what() << std::endl;
-                continue;
             }
         }
-
-        if (input == "print")
+        else if (input == "print")
         {
             std::string reg;
             std::cin >> reg;
 
             std::cout << matrices[std::stoi(&reg[1])];
         }
-
-
-        if (input == "add")
+        else if (input == "add")
         {
             std::string reg;
             std::cin >> reg;
@@ -84,8 +82,7 @@ int main(int argc, char *argv[])
                 std::cout << "ADD: " << e.what() << std::endl;
             }
         }
-
-        if (input == "mul")
+        else if (input == "mul")
         {
             std::string reg1;
             std::cin >> reg1;
@@ -102,8 +99,7 @@ int main(int argc, char *argv[])
                 std::cout << "MUL: " << e.what() << std::endl;
             }
         }
-
-        if (input == "elem")
+        else if (input == "elem")
         {
             std::string reg;
             std::cin >> reg;
@@ -124,8 +120,7 @@ int main(int argc, char *argv[])
                 std::cout << "ACCESS: " << e.what() << std::endl;
             }
         }
-
-        if (input == "exit")
+        else if (input == "exit")
         {
             return 0;
         }
