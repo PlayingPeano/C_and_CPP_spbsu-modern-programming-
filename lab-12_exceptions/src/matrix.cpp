@@ -257,7 +257,7 @@ namespace matrix
 
     int Matrix::operator()(std::size_t i, std::size_t j)
     {
-        if (i >= _rows || j >= _cols || i < 0 || j < 0)
+        if (i >= _rows || j >= _cols)
         {
             throw MatrixException("bad index.");
         }
