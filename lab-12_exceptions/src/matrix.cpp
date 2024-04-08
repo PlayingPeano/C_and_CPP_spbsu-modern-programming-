@@ -224,12 +224,12 @@ namespace matrix
         try
         {
             Matrix temp(*this * m);
+            swap(*this, temp);
         }
         catch (std::bad_alloc &e)
         {
             throw e;
         }
-        swap(*this, temp);
         return *this;
     }
 
