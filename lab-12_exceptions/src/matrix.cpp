@@ -286,7 +286,10 @@ namespace matrix
         {
             for (std::size_t j = 0; j < m._cols; ++j)
             {
-                os << m._data[i][j] << " ";
+                if (j != m._cols - 1)
+                {
+                    os << m._data[i][j] << " ";
+                }
             }
             if (i != m._rows - 1)
             {
