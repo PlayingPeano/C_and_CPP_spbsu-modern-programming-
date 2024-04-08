@@ -277,6 +277,7 @@ namespace matrix
                 is >> m._data[i][j];
             }
         }
+        return is;
     }
 
     std::ostream &operator<<(std::ostream &os, const Matrix &m)
@@ -289,5 +290,6 @@ namespace matrix
             }
             os << std::endl;
         }
+        return os;
     }
 }
