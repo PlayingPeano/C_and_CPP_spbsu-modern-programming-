@@ -288,7 +288,10 @@ namespace matrix
             {
                 os << m._data[i][j] << " ";
             }
-            os << std::endl;
+            if (i != m._rows - 1)
+            {
+                os << std::endl;
+            }
         }
         return os;
     }
