@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
             std::string reg;
             std::cin >> reg;
 
-            std::cout << matrices[std::stoi(&reg[1])] << std::endl;
+            std::cout << matrices[std::stoi(&reg[1])];
         }
 
 
