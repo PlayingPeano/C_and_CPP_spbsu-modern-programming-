@@ -35,14 +35,14 @@ int main(int argc, char *argv[])
 
             if (fin.eof())
             {
-                std::cout << "LOAD: empty file." << std::endl;
+                std::cout << "LOAD: invalid file format." << std::endl;
                 continue;
             }
             fin >> rows;
 
             if (fin.eof())
             {
-                std::cout << "LOAD: empty file." << std::endl;
+                std::cout << "LOAD: invalid file format." << std::endl;
                 continue;
             }
             fin >> cols;
