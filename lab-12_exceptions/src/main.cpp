@@ -33,18 +33,7 @@ int main(int argc, char *argv[])
             std::size_t rows = 0;
             std::size_t cols = 0;
 
-            if (fin.eof())
-            {
-                std::cout << "LOAD: invalid file format." << std::endl;
-                continue;
-            }
             fin >> rows;
-
-            if (fin.eof())
-            {
-                std::cout << "LOAD: invalid file format." << std::endl;
-                continue;
-            }
             fin >> cols;
 
             try
