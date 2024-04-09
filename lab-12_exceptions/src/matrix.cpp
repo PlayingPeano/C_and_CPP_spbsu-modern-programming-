@@ -51,7 +51,12 @@ namespace matrix
         }
         try
         {
-            (*this) = Matrix(_rows, _cols);
+            _data = new int *[_rows];
+            int *mem = new int[_rows * _cols];
+            for (std::size_t i = 0; i < _rows; ++i)
+            {
+                _data[i] = mem + i * _cols;
+            }
         }
         catch (MatrixException &e)
         {
