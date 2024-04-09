@@ -49,6 +49,7 @@ namespace matrix
         {
             throw MatrixException("invalid file format.");
         }
+        delete _data;
         int *mem;
         try
         {
@@ -60,7 +61,7 @@ namespace matrix
             delete[]mem;
             throw e;
         }
-        
+
         for (std::size_t i = 0; i < _rows; ++i)
         {
             _data[i] = &mem[i * _cols];
