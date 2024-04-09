@@ -44,7 +44,7 @@ namespace matrix
         catch (std::bad_alloc &e)
         {
             delete[]mem;
-            throw MatrixException("Unable to allocate memory.");
+            throw e;
         }
 
         for (std::size_t i = 0; i < _rows; ++i)
