@@ -37,17 +37,17 @@ namespace matrix
 
         if (!file.is_open())
         {
-            throw MatrixException("LOAD: unable to open file.");
+            throw MatrixException("unable to open file.");
         }
         file >> _rows;
         if (file.fail() || file.bad())
         {
-            throw MatrixException("LOAD: invalid file format.");
+            throw MatrixException("invalid file format.");
         }
         file >> _cols;
         if (file.fail() || file.bad())
         {
-            throw MatrixException("LOAD: invalid file format.");
+            throw MatrixException("invalid file format.");
         }
         int *mem = nullptr;
         try
@@ -72,7 +72,7 @@ namespace matrix
                 file >> x;
                 if (file.fail() || file.bad())
                 {
-                    throw MatrixException("LOAD: invalid file format.");
+                    throw MatrixException("invalid file format.");
                 }
                 _data[i][j] = x;
             }
