@@ -18,30 +18,15 @@ int main(int argc, char *argv[])
         if (input == "load")
         {
             char r;
-            int reg;
+            std::size_t reg;
             std::cin >> r >> reg;
 
             std::string filename;
             std::cin >> filename;
 
-            std::ifstream fin(filename);
-            if (!fin.is_open())
-            {
-                std::cout << "LOAD: unable to open file." << std::endl;
-                continue;
-            }
-
-            std::size_t rows = 0;
-            std::size_t cols = 0;
-
-            fin >> rows;
-            fin >> cols;
-
             try
             {
-                matrix::Matrix mat(rows, cols);
-                fin >> mat;
-                matrices[reg] = mat;
+                matrices[reg] = matrix::Matrix(filename);
             }
             catch (matrix::MatrixException &e)
             {
@@ -55,7 +40,7 @@ int main(int argc, char *argv[])
         else if (input == "print")
         {
             char r;
-            int reg;
+            std::size_t reg;
             std::cin >> r >> reg;
 
             std::cout << matrices[reg];
@@ -63,10 +48,10 @@ int main(int argc, char *argv[])
         else if (input == "add")
         {
             char r;
-            int reg1;
+            std::size_t reg1;
             std::cin >> r >> reg1;
 
-            int reg2;
+            std::size_t reg2;
             std::cin >> r >> reg2;
 
             try
@@ -81,10 +66,10 @@ int main(int argc, char *argv[])
         else if (input == "mul")
         {
             char r;
-            int reg1;
+            std::size_t reg1;
             std::cin >> r >> reg1;
 
-            int reg2;
+            std::size_t reg2;
             std::cin >> r >> reg2;
 
             try
@@ -103,7 +88,7 @@ int main(int argc, char *argv[])
         else if (input == "elem")
         {
             char r;
-            int reg;
+            std::size_t reg;
             std::cin >> r >> reg;
 
             std::size_t row;

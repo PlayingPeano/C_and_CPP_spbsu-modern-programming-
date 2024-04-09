@@ -31,6 +31,42 @@ namespace matrix
         _data = nullptr;
     }
 
+    Matrix::Matrix(const std::string &filename)
+    {
+        std::ifstream file(filename);
+
+        if (!file.is_open())
+        {
+            throw MatrixException("LOAD: unable to open file.");
+        }
+        file >> _rows;
+        if (file.fail() || file.bad())
+        {
+            throw MatrixException("LOAD: invalid file format.");
+        }
+        file >> _cols;
+        if (file.fail() || file.bad())
+        {
+            throw MatrixException("LOAD: invalid file format.");
+        }
+
+        *this = Matrix(_rows, _cols);
+
+        for (std::size_t i = 0; i < _rows; ++i)
+        {
+            for (std::size_t j = 0; j < _cols; ++j)
+            {
+                int x = 0;
+                file >> x;
+                if (file.fail() || file.bad())
+                {
+                    throw MatrixException("LOAD: invalid file format.");
+                }
+                _data[i][j] = x;
+            }
+        }
+    }
+
     Matrix::Matrix(std::size_t r, std::size_t c)
     {
         _rows = r;

@@ -22,6 +22,8 @@ namespace matrix
     public:
         Matrix();
 
+        Matrix(const std::string &filename);
+
         Matrix(std::size_t r, std::size_t c);
 
         Matrix(const Matrix &m);
