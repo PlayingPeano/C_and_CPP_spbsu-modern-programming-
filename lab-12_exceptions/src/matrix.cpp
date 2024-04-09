@@ -33,40 +33,53 @@ namespace matrix
 
     Matrix::Matrix(const std::string &filename)
     {
-        std::ifstream file(filename);
+        try
+        {
+            std::ifstream file(filename);
 
-        if (!file.is_open())
-        {
-            throw MatrixException("unable to open file.");
-        }
-        file >> _rows;
-        if (file.fail() || file.bad())
-        {
-            throw MatrixException("invalid file format.");
-        }
-        file >> _cols;
-        if (file.fail() || file.bad())
-        {
-            throw MatrixException("invalid file format.");
-        }
-
-        Matrix temp(_rows, _cols);
-
-        for (std::size_t i = 0; i < _rows; ++i)
-        {
-            for (std::size_t j = 0; j < _cols; ++j)
+            if (!file.is_open())
             {
-                int x = 0;
-                file >> x;
-                if (file.fail() || file.bad())
-                {
-                    throw MatrixException("invalid file format.");
-                }
-                temp._data[i][j] = x;
+                throw MatrixException("unable to open file.");
             }
-        }
+            file >> _rows;
+            if (file.fail() || file.bad())
+            {
+                throw MatrixException("invalid file format.");
+            }
+            file >> _cols;
+            if (file.fail() || file.bad())
+            {
+                throw MatrixException("invalid file format.");
+            }
 
-        swap(*this, temp);
+            Matrix temp(_rows, _cols);
+            for (std::size_t i = 0; i < _rows; ++i)
+            {
+                for (std::size_t j = 0; j < _cols; ++j)
+                {
+                    int x = 0;
+                    file >> x;
+                    if (file.fail() || file.bad())
+                    {
+                        throw MatrixException("invalid file format.");
+                    }
+                    temp._data[i][j] = x;
+                }
+            }
+            swap(*this, temp);
+        }
+        catch (MatrixException &e)
+        {
+            throw e;
+        }
+        catch (std::ios_base::failure &e)
+        {
+            throw MatrixException("invalid file format.");
+        }
+        catch(std::bad_alloc &e)
+        {
+            throw e;
+        }
     }
 
     Matrix::Matrix(std::size_t r, std::size_t c)
