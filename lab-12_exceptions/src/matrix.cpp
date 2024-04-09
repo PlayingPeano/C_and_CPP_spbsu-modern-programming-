@@ -49,21 +49,19 @@ namespace matrix
         {
             throw MatrixException("LOAD: invalid file format.");
         }
+        int *mem = nullptr;
         try
         {
             _data = new int *[_rows];
-            int *mem = new int[_rows * _cols];
+            mem = new int[_rows * _cols];
             for (std::size_t i = 0; i < _rows; ++i)
             {
                 _data[i] = mem + i * _cols;
             }
         }
-        catch (MatrixException &e)
-        {
-            throw e;
-        }
         catch (std::bad_alloc &e)
         {
+            delete[]mem;
             throw e;
         }
         for (std::size_t i = 0; i < _rows; ++i)
