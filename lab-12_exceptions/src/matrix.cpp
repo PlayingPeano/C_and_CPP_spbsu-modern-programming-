@@ -49,9 +49,18 @@ namespace matrix
         {
             throw MatrixException("LOAD: invalid file format.");
         }
-
-        *this = Matrix(_rows, _cols);
-
+        try
+        {
+            (*this) = Matrix(_rows, _cols);
+        }
+        catch (MatrixException &e)
+        {
+            throw e;
+        }
+        catch (std::bad_alloc &e)
+        {
+            throw e;
+        }
         for (std::size_t i = 0; i < _rows; ++i)
         {
             for (std::size_t j = 0; j < _cols; ++j)
