@@ -17,8 +17,9 @@ int main(int argc, char *argv[])
 
         if (input == "load")
         {
-            std::string reg;
-            std::cin >> reg;
+            char r;
+            int reg;
+            std::cin >> r >> reg;
 
             std::string filename;
             std::cin >> filename;
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
             {
                 matrix::Matrix mat(rows, cols);
                 fin >> mat;
-                matrices[std::stoi(&reg[1])] = mat;
+                matrices[reg] = mat;
             }
             catch (matrix::MatrixException &e)
             {
@@ -53,22 +54,24 @@ int main(int argc, char *argv[])
         }
         else if (input == "print")
         {
-            std::string reg;
-            std::cin >> reg;
+            char r;
+            int reg;
+            std::cin >> r >> reg;
 
-            std::cout << matrices[std::stoi(&reg[1])];
+            std::cout << matrices[reg];
         }
         else if (input == "add")
         {
-            std::string reg;
-            std::cin >> reg;
+            char r;
+            int reg1;
+            std::cin >> r >> reg1;
 
-            std::string reg2;
-            std::cin >> reg2;
+            int reg2;
+            std::cin >> r >> reg2;
 
             try
             {
-                matrices[std::stoi(&reg[1])] += matrices[std::stoi(&reg2[1])];
+                matrices[reg1] += matrices[reg2];
             }
             catch (matrix::MatrixException &e)
             {
@@ -77,15 +80,16 @@ int main(int argc, char *argv[])
         }
         else if (input == "mul")
         {
-            std::string reg1;
-            std::cin >> reg1;
+            char r;
+            int reg1;
+            std::cin >> r >> reg1;
 
-            std::string reg2;
-            std::cin >> reg2;
+            int reg2;
+            std::cin >> r >> reg2;
 
             try
             {
-                matrices[std::stoi(&reg1[1])] *= matrices[std::stoi(&reg2[1])];
+                matrices[reg1] *= matrices[reg2];
             }
             catch (matrix::MatrixException &e)
             {
@@ -98,8 +102,9 @@ int main(int argc, char *argv[])
         }
         else if (input == "elem")
         {
-            std::string reg;
-            std::cin >> reg;
+            char r;
+            int reg;
+            std::cin >> r >> reg;
 
             std::size_t row;
             std::cin >> row;
@@ -109,7 +114,7 @@ int main(int argc, char *argv[])
 
             try
             {
-                int tmp = matrices[std::stoi(&reg[1])](row, col);
+                int tmp = matrices[reg](row, col);
                 std::cout << tmp << std::endl;
             }
             catch (matrix::MatrixException &e)
