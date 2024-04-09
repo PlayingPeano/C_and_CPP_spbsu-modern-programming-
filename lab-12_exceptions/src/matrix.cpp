@@ -49,23 +49,8 @@ namespace matrix
         {
             throw MatrixException("invalid file format.");
         }
-        delete _data;
-        int *mem;
-        try
-        {
-            _data = new int *[_rows];
-            mem = new int[_rows * _cols];
-        }
-        catch (std::bad_alloc &e)
-        {
-            delete[]mem;
-            throw e;
-        }
 
-        for (std::size_t i = 0; i < _rows; ++i)
-        {
-            _data[i] = &mem[i * _cols];
-        }
+        Matrix temp(_rows, _cols);
 
         for (std::size_t i = 0; i < _rows; ++i)
         {
@@ -77,9 +62,11 @@ namespace matrix
                 {
                     throw MatrixException("invalid file format.");
                 }
-                _data[i][j] = x;
+                temp._data[i][j] = x;
             }
         }
+
+        swap(*this, temp);
     }
 
     Matrix::Matrix(std::size_t r, std::size_t c)
