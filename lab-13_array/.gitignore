@@ -1,0 +1,15 @@
+f# This lab:
+/lab-13_array
+
+# General build directories:
+# - for Makefile:
+/obj/
+# - for CMake, by default:
+/build/
+/_build/
+
+# CLion projects:
+/.idea/
+/cmake-build*/
+CMakeLists.txt
+/lab-13_array.dSYM/
