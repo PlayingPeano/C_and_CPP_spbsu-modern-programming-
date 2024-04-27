@@ -8,6 +8,8 @@
 #include <utility>
 #include <map>
 #include <string>
+#include <tuple>
+#include <filesystem>
 
 namespace huffman_constants
 {
@@ -20,9 +22,9 @@ namespace huffman_compression
     class huffman
     {
     public:
-        static void compress(std::string &in_filename, std::string &out_filename);
+        static std::tuple<std::size_t, std::size_t, std::size_t> compress(std::string &in_filename, std::string &out_filename);
 
-        static void decompress(std::string &in_filename, std::string &out_filename);
+        static std::tuple<std::size_t, std::size_t, std::size_t> decompress(std::string &in_filename, std::string &out_filename);
     };
 
     struct frequency_table

@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <exception>
+#include <tuple>
 #include "huffman.h"
 
 int main(int argc, char **argv)
@@ -38,7 +39,10 @@ int main(int argc, char **argv)
     {
         try
         {
-            huffman_compression::huffman::compress(in_file, out_file);
+            std::tuple<std::size_t, std::size_t, std::size_t> result = huffman_compression::huffman::compress(in_file,
+                                                                                                              out_file);
+            std::cout << std::get<0>(result) << std::endl << std::get<1>(result) << std::endl << std::get<2>(result)
+                      << std::endl;
         }
         catch (std::invalid_argument &exception)
         {
@@ -49,7 +53,10 @@ int main(int argc, char **argv)
     {
         try
         {
-            huffman_compression::huffman::compress(in_file, out_file);
+            std::tuple<std::size_t, std::size_t, std::size_t> result = huffman_compression::huffman::decompress(in_file,
+                                                                                                                out_file);
+            std::cout << std::get<0>(result) << std::endl << std::get<1>(result) << std::endl << std::get<2>(result)
+                      << std::endl;
         }
         catch (std::invalid_argument &exception)
         {

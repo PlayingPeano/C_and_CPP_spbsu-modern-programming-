@@ -6,6 +6,8 @@
 #include <queue>
 #include <string>
 #include <fstream>
+#include <tuple>
+#include <filesystem>
 
 
 namespace huffman_compression
@@ -156,14 +158,18 @@ namespace huffman_compression
         return bytes_for_huffman_codes[code];
     }
 
-    void huffman::compress(std::string &in_filename, std::string &out_filename)
+    std::tuple<std::size_t, std::size_t, std::size_t> huffman::compress(std::string &in_filename, std::string &out_filename)
     {
+        std::tuple<std::size_t, std::size_t, std::size_t> result = {0, 0, 0};
         std::ifstream in(in_filename, std::ios::binary);
 
         if (!in.is_open())
         {
             throw std::runtime_error("Can't open input file");
         }
+
+        std::filesystem::path path(in_filename);
+        std::get<0>(result) = std::filesystem::file_size(path);
 
         in.seekg(0, std::ios::end);
         std::streampos fileSize = in.tellg();
@@ -188,11 +194,13 @@ namespace huffman_compression
 
         std::size_t tableSize = frequencyTable.get_size_of_table();
         out.write(reinterpret_cast<const char*>(&tableSize), sizeof(tableSize));
+        std::get<2>(result) = sizeof(tableSize);
 
         for (const auto &[key, value]: frequencyTable.get_table())
         {
             out.write(&key, sizeof(key));
             out.write(reinterpret_cast<const char*>(&value), sizeof(value));
+            std::get<2>(result) += sizeof(key) + sizeof(value);
         }
 
         std::string coded_text;
@@ -203,19 +211,25 @@ namespace huffman_compression
 
         std::size_t codedTextSize = coded_text.size();
         out.write(reinterpret_cast<const char*>(&codedTextSize), sizeof(codedTextSize));
+        std::get<2>(result) += sizeof(codedTextSize);
 
         while (coded_text.size() % 8 != 0)
         {
             coded_text.append("0");
+            std::get<1>(result)++;
         }
 
         out.write(coded_text.c_str(), static_cast<std::streamsize>(coded_text.size()));
+        std::get<1>(result) += coded_text.size();
 
         out.close();
+
+        return result;
     }
 
-    void huffman::decompress(std::string &in_filename, std::string &out_filename)
+    std::tuple<std::size_t, std::size_t, std::size_t> huffman::decompress(std::string &in_filename, std::string &out_filename)
     {
+        std::tuple<std::size_t, std::size_t, std::size_t> result = {0, 0, 0};
         std::ifstream in(in_filename, std::ios::binary);
 
         if (!in.is_open())
@@ -228,6 +242,7 @@ namespace huffman_compression
         {
             throw std::runtime_error("Can't read input file");
         }
+        std::get<2>(result) = sizeof(tableSize);
 
         std::map<char, std::size_t> table;
         for (std::size_t i = 0; i < tableSize; ++i)
@@ -240,6 +255,8 @@ namespace huffman_compression
             }
 
             table[ch] = frequency;
+
+            std::get<2>(result) += sizeof(ch) + sizeof(frequency);
         }
 
         frequency_table frequencyTable(table);
@@ -250,6 +267,8 @@ namespace huffman_compression
         {
             throw std::runtime_error("Can't read input file");
         }
+        std::get<2>(result) += sizeof(codedTextSize);
+        std::get<0>(result) = codedTextSize;
 
         std::string decodedText;
         {
@@ -281,5 +300,8 @@ namespace huffman_compression
 
         out.write(decodedText.c_str(), static_cast<std::streamsize>(decodedText.size()));
         out.close();
+        std::get<1>(result) = decodedText.size();
+
+        return result;
     }
 }
