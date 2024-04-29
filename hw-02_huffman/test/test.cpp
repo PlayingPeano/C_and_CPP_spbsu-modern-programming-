@@ -1,4 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+
 #include "test.h"
 #include "huffman.h"
 #include <iostream>
@@ -14,7 +15,9 @@ namespace frequency_table_tests
 
     TEST_CASE("Frequency table constructor from std::map")
     {
-        std::map<char, std::size_t> table = {{'a', 2}, {'b', 3}, {'c', 1}};
+        std::map<char, std::size_t> table = {{'a', 2},
+                                             {'b', 3},
+                                             {'c', 1}};
         huffman_compression::frequency_table ft(table);
 
         CHECK(ft._table['a'] == 2);
@@ -34,7 +37,9 @@ namespace frequency_table_tests
 
     TEST_CASE("Frequency table operator[]")
     {
-        std::map<char, std::size_t> table = {{'a', 2}, {'b', 3}, {'c', 1}};
+        std::map<char, std::size_t> table = {{'a', 2},
+                                             {'b', 3},
+                                             {'c', 1}};
         huffman_compression::frequency_table ft(table);
 
         CHECK(ft['a'] == 2);
@@ -83,7 +88,9 @@ namespace tree_tests
 
     TEST_CASE("Constructor with root node")
     {
-        std::map<char, std::size_t> table = {{'a', 2}, {'b', 3}, {'c', 1}};
+        std::map<char, std::size_t> table = {{'a', 2},
+                                             {'b', 3},
+                                             {'c', 1}};
         auto ft = huffman_compression::frequency_table(table);
         huffman_compression::tree t(ft);
 
@@ -96,17 +103,19 @@ namespace tree_tests
     }
 }
 
-//namespace compressing_tests
-//{
-//    TEST_CASE("Empty file")
-//    {
-//        std::map<char, std::size_t> table = {{'a', 2}, {'b', 3}, {'c', 1}};
-//        auto ft = huffman_compression::frequency_table(table);
-//        huffman_compression::tree t(ft);
-//        std::string inputFilename = "tests/sample.txt";
-//        std::string outputFilename = "tests/compressed.txt";
-//        huffman_compression::huffman::compress(inputFilename, outputFilename);
-//        std::string decompressedFilename = "tests/decompressed.txt";
-//        huffman_compression::huffman::decompress(outputFilename, decompressedFilename);
-//    }
-//}
+namespace compressing_tests
+{
+    TEST_CASE("Empty file")
+    {
+        std::string inputFilename = "test/empty.txt";
+        std::string outputFilename = "test/emptyC.txt";
+        std::tuple<std::size_t, std::size_t, std::size_t> result1 = huffman_compression::huffman::compress(
+                inputFilename, outputFilename);
+        CHECK((std::get<0>(result1) == 0 && std::get<1>(result1) == 0 && std::get<2>(result1) == 0));
+
+        std::string decompressedFilename = "test/emptyD.txt";
+        std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::huffman::decompress(
+                outputFilename, decompressedFilename);
+        CHECK((std::get<0>(result2) == 0 && std::get<1>(result2) == 0 && std::get<2>(result2) == 0));
+    }
+}

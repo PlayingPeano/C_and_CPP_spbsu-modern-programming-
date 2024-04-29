@@ -280,13 +280,15 @@ namespace huffman_compression
         tree treeWithCodes(frequencyTable);
 
         std::size_t codedTextSize = 0;
-        if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
+        if (fileSize)
         {
-            throw std::runtime_error("Can't read input file");
+            if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
+            {
+                throw std::runtime_error("Can't read input file");
+            }
+            std::get<2>(result) += sizeof(codedTextSize);
+            std::get<0>(result) = (codedTextSize + 8) / 8;
         }
-        std::get<2>(result) += sizeof(codedTextSize);
-        std::get<0>(result) = (codedTextSize + 8) / 8;
-
         std::string decodedText = bitstream::read(codedTextSize, in, treeWithCodes.get_map_bytes_for_huffman_codes());
         in.close();
 
