@@ -197,8 +197,14 @@ namespace huffman_compression
         }
 
         std::size_t tableSize = frequencyTable.get_size_of_table();
+
+        if (tableSize == 0)
+        {
+            return {0, 0, 0};
+        }
         out.write(reinterpret_cast<const char *>(&tableSize), sizeof(tableSize));
         std::get<2>(result) = sizeof(tableSize);
+
 
         for (const auto &[key, value]: frequencyTable.get_table())
         {
@@ -242,6 +248,13 @@ namespace huffman_compression
             throw std::runtime_error("Can't open input file");
         }
 
+        in.seekg(0, std::ios::end);
+        std::streampos fileSize = in.tellg();
+        in.seekg(0, std::ios::beg);
+        if (fileSize == 0)
+        {
+            return {0, 0, 0};
+        }
         std::size_t tableSize = 0;
         if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
         {
