@@ -25,7 +25,7 @@ namespace bitstream
         static std::string decodedText;
         static std::string codedText;
 
-        for (std::size_t i = 0; i < codedTextSize + 7; i += 8)
+        for (std::size_t i = 0; i < (codedTextSize + 7) / 8; ++i)
         {
             static std::string code;
             char tmp;
@@ -35,7 +35,7 @@ namespace bitstream
             {
                 byte[j] = (tmp) & (1 << j);
             }
-            for (std::size_t j = 0; j < 8 && i + j < codedTextSize; ++j)
+            for (std::size_t j = 0; j < 8 && 8 * i + j < codedTextSize; ++j)
             {
                 code.append(byte[j] ? "1" : "0");
                 if (decodedMap.find(code) != decodedMap.end())
