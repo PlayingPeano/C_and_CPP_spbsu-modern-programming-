@@ -200,6 +200,7 @@ namespace huffman_compression
 
         if (tableSize == 0)
         {
+            out.close();
             return {0, 0, 0};
         }
         out.write(reinterpret_cast<const char *>(&tableSize), sizeof(tableSize));
@@ -287,7 +288,7 @@ namespace huffman_compression
                 throw std::runtime_error("Can't read input file");
             }
             std::get<2>(result) += sizeof(codedTextSize);
-            std::get<0>(result) = (codedTextSize + 8) / 8;
+            std::get<0>(result) = (codedTextSize + 7) / 8;
         }
         std::string decodedText = bitstream::read(codedTextSize, in, treeWithCodes.get_map_bytes_for_huffman_codes());
         in.close();

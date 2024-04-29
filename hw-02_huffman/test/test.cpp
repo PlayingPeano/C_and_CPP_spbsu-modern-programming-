@@ -3,6 +3,7 @@
 #include "test.h"
 #include "huffman.h"
 #include <iostream>
+#include <fstream>
 
 namespace frequency_table_tests
 {
@@ -117,5 +118,33 @@ namespace compressing_tests
         std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::huffman::decompress(
                 outputFilename, decompressedFilename);
         CHECK((std::get<0>(result2) == 0 && std::get<1>(result2) == 0 && std::get<2>(result2) == 0));
+    }
+
+    TEST_CASE("All bytes")
+    {
+        std::string inputFilename = "test/allBytes.txt";
+        std::ofstream out(inputFilename, std::ios::binary);
+        for (int i = -128; i <= 127; ++i)
+        {
+            char ch = static_cast<char>(i);
+            out.write(&ch, 1);
+        }
+        out.close();
+
+        std::string compressedFilename = "test/allBytesC.txt";
+        huffman_compression::huffman::compress(inputFilename, compressedFilename);
+
+        std::string decompressedFilename = "test/allBytesD.txt";
+        huffman_compression::huffman::decompress(compressedFilename, decompressedFilename);
+
+        std::ifstream in(decompressedFilename, std::ios::binary);
+        std::ifstream in2(inputFilename, std::ios::binary);
+        while (!in.eof() && !in2.eof())
+        {
+            char ch1, ch2;
+            in.read(&ch1, 1);
+            in2.read(&ch2, 1);
+            CHECK(ch1 == ch2);
+        }
     }
 }

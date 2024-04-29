@@ -10,12 +10,13 @@ namespace bitstream
     {
         for (std::size_t i = 0; i < bytes.size(); i += 8)
         {
-            char byte = 0;
+            std::bitset<8> byte{};
             for (std::size_t j = 0; j < 8; ++j)
             {
-                byte |= ((bytes[i + j] - '0') << (7 - j));
+                byte[j] = bytes[i + j] == '1';
             }
-            out.write(&byte, 1);
+            char tmp = static_cast<char>(byte.to_ulong());
+            out.write(&tmp, 1);
         }
     }
 
@@ -29,13 +30,18 @@ namespace bitstream
             static std::string code;
             char tmp;
             in.read(&tmp, 1);
-            auto byte = std::bitset<8>(tmp).to_string();
+            std::bitset<8> byte{};
+            for (std::size_t j = 0; j < 8; ++j)
+            {
+                byte[j] = (tmp) & (1 << j);
+            }
             for (std::size_t j = 0; j < 8 && i + j < codedTextSize; ++j)
             {
-                code.append(byte[j] == '0' ? "0" : "1");
-                if (decodedMap[code])
+                code.append(byte[j] ? "1" : "0");
+                if (decodedMap.find(code) != decodedMap.end())
                 {
-                    decodedText.append(&decodedMap[code]);
+                    char res = decodedMap[code];
+                    decodedText.append(1, res);
                     code = "";
                 }
             }
