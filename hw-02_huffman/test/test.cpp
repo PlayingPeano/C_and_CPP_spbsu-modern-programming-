@@ -98,7 +98,7 @@ namespace tree_tests
 
 //namespace compressing_tests
 //{
-//    TEST_CASE("haha")
+//    TEST_CASE("Empty file")
 //    {
 //        std::map<char, std::size_t> table = {{'a', 2}, {'b', 3}, {'c', 1}};
 //        auto ft = huffman_compression::frequency_table(table);

@@ -251,16 +251,15 @@ namespace huffman_compression
         in.seekg(0, std::ios::end);
         std::streampos fileSize = in.tellg();
         in.seekg(0, std::ios::beg);
-        if (fileSize == 0)
-        {
-            return {0, 0, 0};
-        }
         std::size_t tableSize = 0;
-        if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
+        if (fileSize)
         {
-            throw std::runtime_error("Can't read input file");
+            if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
+            {
+                throw std::runtime_error("Can't read input file");
+            }
+            std::get<2>(result) = sizeof(tableSize);
         }
-        std::get<2>(result) = sizeof(tableSize);
 
         std::map<char, std::size_t> table;
         for (std::size_t i = 0; i < tableSize; ++i)
