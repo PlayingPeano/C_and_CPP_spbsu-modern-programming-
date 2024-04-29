@@ -25,7 +25,7 @@ namespace bitstream
         static std::string decodedText;
         static std::string codedText;
 
-        for (std::size_t i = 0; i < codedTextSize; i += 8)
+        for (std::size_t i = 0; i < codedTextSize + 7; i += 8)
         {
             static std::string code;
             char tmp;

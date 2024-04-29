@@ -108,13 +108,13 @@ namespace compressing_tests
 {
     TEST_CASE("Empty file")
     {
-        std::string inputFilename = "test/empty.txt";
-        std::string outputFilename = "test/emptyC.txt";
+        std::string inputFilename = "samples/empty.txt";
+        std::string outputFilename = "samples/emptyC.txt";
         std::tuple<std::size_t, std::size_t, std::size_t> result1 = huffman_compression::huffman::compress(
                 inputFilename, outputFilename);
         CHECK((std::get<0>(result1) == 0 && std::get<1>(result1) == 0 && std::get<2>(result1) == 0));
 
-        std::string decompressedFilename = "test/emptyD.txt";
+        std::string decompressedFilename = "samples/emptyD.txt";
         std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::huffman::decompress(
                 outputFilename, decompressedFilename);
         CHECK((std::get<0>(result2) == 0 && std::get<1>(result2) == 0 && std::get<2>(result2) == 0));
@@ -122,7 +122,7 @@ namespace compressing_tests
 
     TEST_CASE("All bytes")
     {
-        std::string inputFilename = "test/allBytes.txt";
+        std::string inputFilename = "samples/allBytes.txt";
         std::ofstream out(inputFilename, std::ios::binary);
         for (int i = -128; i <= 127; ++i)
         {
@@ -131,12 +131,30 @@ namespace compressing_tests
         }
         out.close();
 
-        std::string compressedFilename = "test/allBytesC.txt";
+        std::string compressedFilename = "samples/allBytesC.txt";
         huffman_compression::huffman::compress(inputFilename, compressedFilename);
 
-        std::string decompressedFilename = "test/allBytesD.txt";
+        std::string decompressedFilename = "samples/allBytesD.txt";
         huffman_compression::huffman::decompress(compressedFilename, decompressedFilename);
 
+        std::ifstream in(decompressedFilename, std::ios::binary);
+        std::ifstream in2(inputFilename, std::ios::binary);
+        while (!in.eof() && !in2.eof())
+        {
+            char ch1, ch2;
+            in.read(&ch1, 1);
+            in2.read(&ch2, 1);
+            CHECK(ch1 == ch2);
+        }
+    }
+
+    TEST_CASE("WarAndPeace")
+    {
+        std::string inputFilename = "samples/warAndPeace.txt";
+        std::string compressedFilename = "samples/warAndPeaceC.txt";
+        std::string decompressedFilename = "samples/warAndPeaceD.txt";
+        huffman_compression::huffman::compress(inputFilename, compressedFilename);
+        huffman_compression::huffman::decompress(compressedFilename, decompressedFilename);
         std::ifstream in(decompressedFilename, std::ios::binary);
         std::ifstream in2(inputFilename, std::ios::binary);
         while (!in.eof() && !in2.eof())
