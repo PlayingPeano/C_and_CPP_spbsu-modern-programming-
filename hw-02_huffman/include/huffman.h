@@ -103,5 +103,7 @@ namespace huffman_compression
         std::string get_huffman_code_for_byte(char value);
 
         char get_byte_for_huffman_code(const std::string &code);
+
+        std::map<std::string, char> &get_map_bytes_for_huffman_codes();
     };
 }
