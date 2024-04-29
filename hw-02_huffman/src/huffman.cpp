@@ -190,7 +190,7 @@ namespace huffman_compression
         frequency_table frequencyTable(data);
         tree treeWithCodes(frequencyTable);
 
-        std::ofstream out(out_filename, std::ios::binary);
+        std::ofstream out(out_filename, std::ios::binary | std::ios::trunc);
         if (!out.is_open())
         {
             throw std::runtime_error("Can't open output file");
@@ -293,7 +293,7 @@ namespace huffman_compression
         std::string decodedText = bitstream::read(codedTextSize, in, treeWithCodes.get_map_bytes_for_huffman_codes());
         in.close();
 
-        std::ofstream out(out_filename, std::ios::binary);
+        std::ofstream out(out_filename, std::ios::binary | std::ios::trunc);
         if (!out.is_open())
         {
             throw std::runtime_error("Can't open output file");
