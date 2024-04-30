@@ -175,16 +175,29 @@ namespace huffman_compression
             throw std::runtime_error("Can't open input file");
         }
 
-        in.seekg(0, std::ios::end);
-        std::streampos fileSize = in.tellg();
-        in.seekg(0, std::ios::beg);
+//        in.seekg(0, std::ios::end);
+//        std::streampos fileSize = in.tellg();
+//        in.seekg(0, std::ios::beg);
 
-        std::vector<char> data(fileSize);
-
-        if (!in.read(data.data(), fileSize))
+        std::vector<char> data;
+        char ch;
+        if(!in.read(&ch, 1) && !in.eof())
         {
             throw std::runtime_error("Can't read input file");
         }
+        while(!in.eof())
+        {
+            data.push_back(ch);
+            if(!in.read(&ch, 1) && !in.eof())
+            {
+                throw std::runtime_error("Can't read input file");
+            }
+        }
+
+//        if (!in.read(data.data(), fileSize))
+//        {
+//            throw std::runtime_error("Can't read input file");
+//        }
         in.close();
 
         frequency_table frequencyTable(data);
