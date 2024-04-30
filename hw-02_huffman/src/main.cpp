@@ -39,8 +39,14 @@ int main(int argc, char **argv)
     {
         try
         {
-            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Compress(in_file,
-                                                                                                              out_file);
+            std::ifstream in(in_file, std::ios::binary);
+            std::ofstream out(out_file, std::ios::binary);
+            in.close();
+            out.close();
+
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Compress(
+                    in_file,
+                    out_file);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
         }
@@ -53,8 +59,14 @@ int main(int argc, char **argv)
     {
         try
         {
-            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Decompress(in_file,
-                                                                                                                      out_file);
+            std::ifstream in(in_file, std::ios::binary);
+            std::ofstream out(out_file, std::ios::binary);
+            in.close();
+            out.close();
+
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Decompress(
+                    in_file,
+                    out_file);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
         }

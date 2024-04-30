@@ -187,10 +187,16 @@ namespace huffman_compression
         std::size_t compressedSize = 0;
         if (data.empty())
         {
+            std::ofstream out(fileName, std::ios::binary);
+            if (!out.is_open())
+            {
+                throw std::runtime_error("Can't open output file");
+            }
+            out.close();
             return {additionalSize, compressedSize};
         }
 
-        std::ofstream out(fileName, std::ios::binary | std::ios::trunc);
+        std::ofstream out(fileName, std::ios::binary);
         if (!out.is_open())
         {
             throw std::runtime_error("Can't open output file");
@@ -306,7 +312,7 @@ namespace huffman_compression
         std::string decodedText = bitstream::read(codedTextSize, in, treeWithCodes.GetMapBytesForHuffmanCodes());
         in.close();
 
-        std::ofstream out(out_filename, std::ios::binary | std::ios::trunc);
+        std::ofstream out(out_filename, std::ios::binary);
         if (!out.is_open())
         {
             throw std::runtime_error("Can't open output file");

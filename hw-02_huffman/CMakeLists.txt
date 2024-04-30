@@ -31,7 +31,7 @@ add_executable(hw-02_huffman_tests
 #        src/bitstream.cpp
 #)
 
-target_include_directories(hw-02_huffman PUBLIC include)
+target_include_directories(hw-02_huffman PUBLIC include ./* ./ ./include ./tmp/ci_6751967856/output/private)
 target_include_directories(hw-02_huffman_tests PUBLIC include doctest/doctest tests)
 #target_include_directories(asan-target PUBLIC include doctest/doctest tests)
 
