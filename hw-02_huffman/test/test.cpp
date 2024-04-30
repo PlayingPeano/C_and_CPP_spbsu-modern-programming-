@@ -11,7 +11,7 @@ namespace frequency_table_tests
     {
         huffman_compression::frequency_table ft;
         CHECK(ft._table.empty());
-        CHECK(ft._table[0] == 0);
+        CHECK(ft._table['0'] == 0);
     }
 
     TEST_CASE("Frequency table constructor from std::map")

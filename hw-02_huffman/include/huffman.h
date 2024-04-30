@@ -36,12 +36,10 @@ namespace huffman_compression
         WriteCompressedDataToFile(const std::string &filename, std::vector<char> &data);
     };
 
-    class frequency_table
+    struct frequency_table
     {
-    private:
         std::map<char, std::size_t> _table;
 
-    public:
         frequency_table() = default;
 
         explicit frequency_table(std::map<char, std::size_t> table);
@@ -51,8 +49,6 @@ namespace huffman_compression
         std::size_t operator[](char value);
 
         std::size_t GetSizeOfTable() const;
-
-        const std::map<char, std::size_t> &GetTable() const;
     };
 
     class node

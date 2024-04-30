@@ -36,11 +36,6 @@ namespace huffman_compression
         return _table.size();
     }
 
-    const std::map<char, std::size_t> &frequency_table::GetTable() const
-    {
-        return _table;
-    }
-
     char node::GetValue() const
     {
         return _value;
@@ -96,7 +91,7 @@ namespace huffman_compression
         std::priority_queue<std::shared_ptr<node>, std::vector<std::shared_ptr<node >>,
                 decltype(cmp_greater_priority_node)> pq(cmp_greater_priority_node);
 
-        for (const auto &[key, value]: table.GetTable())
+        for (const auto &[key, value]: table._table)
         {
             pq.push(std::make_unique<node>(key, value));
         }
@@ -206,7 +201,7 @@ namespace huffman_compression
         additionalSize += sizeof(tableSize);
         out.write(reinterpret_cast<const char *>(&tableSize), sizeof(tableSize));
 
-        for (const auto &[key, value]: frequencyTable.GetTable())
+        for (const auto &[key, value]: frequencyTable._table)
         {
             if (!out.write(reinterpret_cast<const char *>(&key), sizeof(key)) ||
                 !out.write(reinterpret_cast<const char *>(&value), sizeof(value)))
