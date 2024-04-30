@@ -13,8 +13,8 @@ int main(int argc, char **argv)
     }
 
     std::string action;
-    std::string in_file;
-    std::string out_file;
+    std::string InFile;
+    std::string OutFile;
 
     for (std::size_t i = 1; i < 6; ++i)
     {
@@ -25,10 +25,10 @@ int main(int argc, char **argv)
             action = s;
         } else if (s == "-f" && i < 5)
         {
-            in_file = std::string(argv[i++ + 1]);
+            InFile = std::string(argv[i++ + 1]);
         } else if (s == "-o" && i < 5)
         {
-            out_file = std::string(argv[i++ + 1]);
+            OutFile = std::string(argv[i++ + 1]);
         } else
         {
             return -1;
@@ -39,14 +39,14 @@ int main(int argc, char **argv)
     {
         try
         {
-            std::ifstream in(in_file, std::ios::binary);
-            std::ofstream out(out_file, std::ios::binary);
+            std::ifstream in(InFile, std::ios::binary);
+            std::ofstream out(OutFile, std::ios::binary);
             in.close();
             out.close();
 
             auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Compress(
-                    in_file,
-                    out_file);
+                    InFile,
+                    OutFile);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
         }
@@ -59,14 +59,14 @@ int main(int argc, char **argv)
     {
         try
         {
-            std::ifstream in(in_file, std::ios::binary);
-            std::ofstream out(out_file, std::ios::binary);
+            std::ifstream in(InFile, std::ios::binary);
+            std::ofstream out(OutFile, std::ios::binary);
             in.close();
             out.close();
 
             auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Decompress(
-                    in_file,
-                    out_file);
+                    InFile,
+                    OutFile);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
         }
