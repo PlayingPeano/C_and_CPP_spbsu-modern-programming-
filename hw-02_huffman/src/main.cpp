@@ -39,9 +39,9 @@ int main(int argc, char **argv)
     {
         try
         {
-            std::tuple<std::size_t, std::size_t, std::size_t> result = huffman_compression::huffman::compress(in_file,
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Compress(in_file,
                                                                                                               out_file);
-            std::cout << std::get<0>(result) << std::endl << std::get<1>(result) << std::endl << std::get<2>(result)
+            std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
         }
         catch (std::invalid_argument &exception)
@@ -53,9 +53,9 @@ int main(int argc, char **argv)
     {
         try
         {
-            std::tuple<std::size_t, std::size_t, std::size_t> result = huffman_compression::huffman::decompress(in_file,
-                                                                                                                out_file);
-            std::cout << std::get<0>(result) << std::endl << std::get<1>(result) << std::endl << std::get<2>(result)
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Decompress(in_file,
+                                                                                                                      out_file);
+            std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
         }
         catch (std::invalid_argument &exception)

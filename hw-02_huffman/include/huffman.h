@@ -10,6 +10,7 @@
 #include <string>
 #include <tuple>
 #include <filesystem>
+#include <vector>
 
 namespace huffman_constants
 {
@@ -22,15 +23,25 @@ namespace huffman_compression
     class huffman
     {
     public:
-        static std::tuple<std::size_t, std::size_t, std::size_t> compress(std::string &in_filename, std::string &out_filename);
+        static std::tuple<std::size_t, std::size_t, std::size_t>
+        Compress(std::string &in_filename, std::string &out_filename);
 
-        static std::tuple<std::size_t, std::size_t, std::size_t> decompress(std::string &in_filename, std::string &out_filename);
+        static std::tuple<std::size_t, std::size_t, std::size_t>
+        Decompress(std::string &in_filename, std::string &out_filename);
+
+    private:
+        static void GetDataFromFile(const std::string &filename, std::vector<char> &data);
+
+        static std::pair<std::size_t, std::size_t>
+        WriteCompressedDataToFile(const std::string &filename, std::vector<char> &data);
     };
 
-    struct frequency_table
+    class frequency_table
     {
+    private:
         std::map<char, std::size_t> _table;
 
+    public:
         frequency_table() = default;
 
         explicit frequency_table(std::map<char, std::size_t> table);
@@ -39,9 +50,9 @@ namespace huffman_compression
 
         std::size_t operator[](char value);
 
-        std::size_t get_size_of_table() const;
+        std::size_t GetSizeOfTable() const;
 
-        const std::map<char, std::size_t> &get_table() const;
+        const std::map<char, std::size_t> &GetTable() const;
     };
 
     class node
@@ -50,8 +61,8 @@ namespace huffman_compression
         char _value;
         std::size_t _frequency;
 
-        std::shared_ptr <node> _left;
-        std::shared_ptr <node> _right;
+        std::shared_ptr<node> _left;
+        std::shared_ptr<node> _right;
 
     public:
         node() : _value(0), _frequency(0), _left(nullptr), _right(nullptr)
@@ -61,49 +72,49 @@ namespace huffman_compression
                                                   _right(nullptr)
         {}
 
-        node(std::shared_ptr <node> left,
-             std::shared_ptr <node> right) : _value(0), _frequency(left->_frequency + right->_frequency),
-                                             _left(std::move(left)),
-                                             _right(std::move(right))
+        node(std::shared_ptr<node> left,
+             std::shared_ptr<node> right) : _value(0), _frequency(left->_frequency + right->_frequency),
+                                            _left(std::move(left)),
+                                            _right(std::move(right))
         {}
 
-        char get_value() const;
+        char GetValue() const;
 
-        void set_value(char value);
+        void SetValue(char value);
 
-        std::size_t get_frequency() const;
+        std::size_t GetFrequency() const;
 
-        void set_frequency(std::size_t frequency);
+        void SetFrequency(std::size_t frequency);
 
-        std::shared_ptr <node> get_left() const;
+        std::shared_ptr<node> GetLeft() const;
 
-        void set_left(std::shared_ptr <node> left);
+        void SetLeft(std::shared_ptr<node> left);
 
-        std::shared_ptr <node> get_right() const;
+        std::shared_ptr<node> GetRight() const;
 
-        void set_right(std::shared_ptr <node> right);
+        void SetRight(std::shared_ptr<node> right);
     };
 
     class tree
     {
     private:
-        std::shared_ptr <node> _root = nullptr;
+        std::shared_ptr<node> _root = nullptr;
         std::map<char, std::string> huffman_codes_for_bytes;
         std::map<std::string, char> bytes_for_huffman_codes;
 
-        void obtain_huffman_codes(const std::shared_ptr <node> &node, const std::string &code);
+        void ObtainHuffmanCodes(const std::shared_ptr<node> &node, const std::string &code);
 
     public:
         tree();
 
         explicit tree(const frequency_table &table);
 
-        std::shared_ptr <node> get_root() const;
+        std::shared_ptr<node> GetRoot() const;
 
-        std::string get_huffman_code_for_byte(char value);
+        std::string GetHuffmanCodeForByte(char value);
 
-        char get_byte_for_huffman_code(const std::string &code);
+        char GetByteForHuffmanCode(const std::string &code);
 
-        std::map<std::string, char> &get_map_bytes_for_huffman_codes();
+        std::map<std::string, char> &GetMapBytesForHuffmanCodes();
     };
 }

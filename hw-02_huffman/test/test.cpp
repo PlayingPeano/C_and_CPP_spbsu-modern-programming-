@@ -60,10 +60,10 @@ namespace node_tests
     TEST_CASE("Constructor with value and frequency")
     {
         huffman_compression::node n('a', 3);
-        CHECK(n.get_value() == 'a');
-        CHECK(n.get_frequency() == 3);
-        CHECK(n.get_left() == nullptr);
-        CHECK(n.get_right() == nullptr);
+        CHECK(n.GetValue() == 'a');
+        CHECK(n.GetFrequency() == 3);
+        CHECK(n.GetLeft() == nullptr);
+        CHECK(n.GetRight() == nullptr);
     }
 
     TEST_CASE("Constructor with left and right nodes")
@@ -71,9 +71,9 @@ namespace node_tests
         std::shared_ptr<huffman_compression::node> left = std::make_shared<huffman_compression::node>('b', 2);
         std::shared_ptr<huffman_compression::node> right = std::make_shared<huffman_compression::node>('c', 1);
         huffman_compression::node n(left, right);
-        CHECK(n.get_frequency() == 3);
-        CHECK(n.get_left() == left);
-        CHECK(n.get_right() == right);
+        CHECK(n.GetFrequency() == 3);
+        CHECK(n.GetLeft() == left);
+        CHECK(n.GetRight() == right);
     }
 }
 
@@ -82,9 +82,9 @@ namespace tree_tests
     TEST_CASE("Smoke")
     {
         huffman_compression::tree t;
-        CHECK(t.get_root() == nullptr);
-        CHECK(t.get_huffman_code_for_byte('a') == "");
-        CHECK(t.get_byte_for_huffman_code("\0") == '\0');
+        CHECK(t.GetRoot() == nullptr);
+        CHECK(t.GetHuffmanCodeForByte('a') == "");
+        CHECK(t.GetByteForHuffmanCode("\0") == '\0');
     }
 
     TEST_CASE("Constructor with root node")
@@ -95,12 +95,12 @@ namespace tree_tests
         auto ft = huffman_compression::frequency_table(table);
         huffman_compression::tree t(ft);
 
-        CHECK(t.get_huffman_code_for_byte('a') == "11");
-        CHECK(t.get_huffman_code_for_byte('b') == "0");
-        CHECK(t.get_huffman_code_for_byte('c') == "10");
-        CHECK(t.get_byte_for_huffman_code("11") == 'a');
-        CHECK(t.get_byte_for_huffman_code("0") == 'b');
-        CHECK(t.get_byte_for_huffman_code("10") == 'c');
+        CHECK(t.GetHuffmanCodeForByte('a') == "11");
+        CHECK(t.GetHuffmanCodeForByte('b') == "0");
+        CHECK(t.GetHuffmanCodeForByte('c') == "10");
+        CHECK(t.GetByteForHuffmanCode("11") == 'a');
+        CHECK(t.GetByteForHuffmanCode("0") == 'b');
+        CHECK(t.GetByteForHuffmanCode("10") == 'c');
     }
 }
 
@@ -110,12 +110,12 @@ namespace compressing_tests
     {
         std::string inputFilename = "samples/empty.txt";
         std::string outputFilename = "samples/emptyC.txt";
-        std::tuple<std::size_t, std::size_t, std::size_t> result1 = huffman_compression::huffman::compress(
+        std::tuple<std::size_t, std::size_t, std::size_t> result1 = huffman_compression::huffman::Compress(
                 inputFilename, outputFilename);
         CHECK((std::get<0>(result1) == 0 && std::get<1>(result1) == 0 && std::get<2>(result1) == 0));
 
         std::string decompressedFilename = "samples/emptyD.txt";
-        std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::huffman::decompress(
+        std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::huffman::Decompress(
                 outputFilename, decompressedFilename);
         CHECK((std::get<0>(result2) == 0 && std::get<1>(result2) == 0 && std::get<2>(result2) == 0));
     }
@@ -132,10 +132,10 @@ namespace compressing_tests
         out1.close();
 
         std::string compressedFilename = "samples/allBytesC.txt";
-        huffman_compression::huffman::compress(inputFilename, compressedFilename);
+        huffman_compression::huffman::Compress(inputFilename, compressedFilename);
 
         std::string decompressedFilename = "samples/allBytesD.txt";
-        huffman_compression::huffman::decompress(compressedFilename, decompressedFilename);
+        huffman_compression::huffman::Decompress(compressedFilename, decompressedFilename);
 
         std::ifstream i(decompressedFilename);
         std::ifstream i2(inputFilename);
@@ -155,8 +155,8 @@ namespace compressing_tests
         std::string inputFilename = "samples/book-war-and-peace.txt";
         std::string compressedFilename = "samples/book-war-and-peaceC.bin";
         std::string decompressedFilename = "samples/book-war-and-peaceD.txt";
-        huffman_compression::huffman::compress(inputFilename, compressedFilename);
-        huffman_compression::huffman::decompress(compressedFilename, decompressedFilename);
+        huffman_compression::huffman::Compress(inputFilename, compressedFilename);
+        huffman_compression::huffman::Decompress(compressedFilename, decompressedFilename);
         std::ifstream in(decompressedFilename);
         std::ifstream in2(inputFilename);
         while (!in.eof() && !in2.eof())
