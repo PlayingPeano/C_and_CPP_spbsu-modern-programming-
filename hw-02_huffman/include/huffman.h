@@ -31,6 +31,9 @@ namespace huffman_constants
     const std::string STR_ZERO = "0";
     const std::string STR_ONE = "1";
     const std::size_t BITS_IN_ONE_BYTE = 8;
+    const std::size_t SIZE_T_ZERO = 0;
+    const std::string STR_EMPTY = "";
+    const char CHAR_EMPTY = '\0';
 }
 
 namespace huffman_compression

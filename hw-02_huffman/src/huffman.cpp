@@ -156,11 +156,19 @@ namespace huffman_compression
 
     std::string tree::GetHuffmanCodeForByte(char value)
     {
+        if (huffman_codes_for_bytes.find(value) == huffman_codes_for_bytes.end())
+        {
+            return huffman_constants::STR_EMPTY;
+        }
         return huffman_codes_for_bytes[value];
     }
 
     char tree::GetByteForHuffmanCode(const std::string &code)
     {
+        if (bytes_for_huffman_codes.find(code) == bytes_for_huffman_codes.end())
+        {
+            return huffman_constants::CHAR_EMPTY;
+        }
         return bytes_for_huffman_codes[code];
     }
 
@@ -171,9 +179,9 @@ namespace huffman_compression
 
     void huffman::GetDataFromFile(std::ifstream &in, std::vector<char> &data)
     {
-        in.seekg(0, std::ios::end);
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::end);
         std::streampos fileSize = in.tellg();
-        in.seekg(0, std::ios::beg);
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::beg);
 
         data.resize(fileSize);
         if (!in.read(data.data(), fileSize))
@@ -185,8 +193,8 @@ namespace huffman_compression
     std::pair<std::size_t, std::size_t>
     huffman::WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data)
     {
-        std::size_t additionalSize = 0;
-        std::size_t compressedSize = 0;
+        std::size_t additionalSize = huffman_constants::SIZE_T_ZERO;
+        std::size_t compressedSize = huffman_constants::SIZE_T_ZERO;
         if (data.empty())
         {
             return {additionalSize, compressedSize};
@@ -222,7 +230,7 @@ namespace huffman_compression
         }
         additionalSize += sizeof(codedTextSize);
 
-        while (codedText.size() % huffman_constants::BITS_IN_ONE_BYTE != 0)
+        while (codedText.size() % huffman_constants::BITS_IN_ONE_BYTE != huffman_constants::SIZE_T_ZERO)
         {
             codedText.append(huffman_constants::STR_ZERO);
         }
@@ -236,7 +244,7 @@ namespace huffman_compression
     std::tuple<std::size_t, std::size_t, std::size_t>
     huffman::Compress(std::ifstream &in, std::ofstream &out)
     {
-        std::vector<char> data;
+        std::vector<char> data{};
         GetDataFromFile(in, data);
 
         auto [additionalSize, compressedSize] = WriteCompressedDataToFile(out, data);
@@ -246,16 +254,16 @@ namespace huffman_compression
 
     void huffman::ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table)
     {
-        std::size_t tableSize = 0;
+        std::size_t tableSize = huffman_constants::SIZE_T_ZERO;
         if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
         {
             throw huffman_exceptions::HuffmanException("Can't read table size");
         }
 
-        for (std::size_t i = 0; i < tableSize; ++i)
+        for (std::size_t i = huffman_constants::SIZE_T_ZERO; i < tableSize; ++i)
         {
-            char key = 0;
-            std::size_t value = 0;
+            char key{};
+            std::size_t value = huffman_constants::SIZE_T_ZERO;
             if (!in.read(reinterpret_cast<char *>(&key), sizeof(key)) ||
                 !in.read(reinterpret_cast<char *>(&value), sizeof(value)))
             {
@@ -269,7 +277,7 @@ namespace huffman_compression
     std::size_t
     huffman::ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap)
     {
-        std::size_t codedTextSize = 0;
+        std::size_t codedTextSize = huffman_constants::SIZE_T_ZERO;
 
         if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
         {
@@ -277,18 +285,19 @@ namespace huffman_compression
         }
 
         data = bitstream::read(codedTextSize, in, decodedMap);
-        return (codedTextSize + 7) / huffman_constants::BITS_IN_ONE_BYTE;
+        return codedTextSize / huffman_constants::BITS_IN_ONE_BYTE +
+               static_cast<int>(codedTextSize % huffman_constants::BITS_IN_ONE_BYTE != huffman_constants::SIZE_T_ZERO);
     }
 
     std::tuple<std::size_t, std::size_t, std::size_t>
     huffman::Decompress(std::ifstream &in, std::ofstream &out)
     {
-        in.seekg(0, std::ios::end);
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::end);
         std::streampos fileSize = in.tellg();
-        in.seekg(0, std::ios::beg);
-        if (fileSize == 0)
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::beg);
+        if (fileSize == huffman_constants::SIZE_T_ZERO)
         {
-            return {0, 0, 0};
+            return {huffman_constants::SIZE_T_ZERO, huffman_constants::SIZE_T_ZERO, huffman_constants::SIZE_T_ZERO};
         }
 
         std::map<char, std::size_t> table;
