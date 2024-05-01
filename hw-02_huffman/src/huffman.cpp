@@ -149,6 +149,14 @@ namespace huffman_compression
         ObtainHuffmanCodes(current->GetRight(), code + huffman_constants::STR_ONE);
     }
 
+    std::size_t huffman::GetSizeOfFile(std::ifstream &in)
+    {
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::end);
+        std::streampos fileSize = in.tellg();
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::beg);
+        return static_cast<std::size_t>(fileSize);
+    }
+
     std::shared_ptr<node> tree::GetRoot() const
     {
         return _root;
@@ -179,10 +187,7 @@ namespace huffman_compression
 
     void huffman::GetDataFromFile(std::ifstream &in, std::vector<char> &data)
     {
-        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::end);
-        std::streampos fileSize = in.tellg();
-        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::beg);
-
+        std::size_t fileSize = huffman::GetSizeOfFile(in);
         data.resize(fileSize);
         if (!in.read(data.data(), fileSize))
         {
@@ -271,7 +276,6 @@ namespace huffman_compression
             }
             table[key] = value;
         }
-
     }
 
     std::size_t
@@ -292,9 +296,7 @@ namespace huffman_compression
     std::tuple<std::size_t, std::size_t, std::size_t>
     huffman::Decompress(std::ifstream &in, std::ofstream &out)
     {
-        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::end);
-        std::streampos fileSize = in.tellg();
-        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::beg);
+        std::size_t fileSize = huffman::GetSizeOfFile(in);
         if (fileSize == huffman_constants::SIZE_T_ZERO)
         {
             return {huffman_constants::SIZE_T_ZERO, huffman_constants::SIZE_T_ZERO, huffman_constants::SIZE_T_ZERO};
@@ -309,10 +311,8 @@ namespace huffman_compression
         std::string decodedText;
         std::size_t compressedDataSize = huffman::ReadEncodedDataToString(in, decodedText,
                                                                           treeWithCodes.GetMapBytesForHuffmanCodes());
-        in.close();
 
         out.write(decodedText.c_str(), static_cast<std::streamsize>(decodedText.size()));
-        out.close();
 
         std::size_t additionalSize = 2 * sizeof(std::size_t) + table.size() * (sizeof(std::size_t) + sizeof(char));
         return {compressedDataSize, decodedText.size(),

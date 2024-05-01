@@ -30,10 +30,13 @@ namespace huffman_constants
 {
     const std::string STR_ZERO = "0";
     const std::string STR_ONE = "1";
+    const char CHAR_ZERO = '0';
+    const char CHAR_ONE = '1';
     const std::size_t BITS_IN_ONE_BYTE = 8;
     const std::size_t SIZE_T_ZERO = 0;
-    const std::string STR_EMPTY = "";
-    const char CHAR_EMPTY = '\0';
+    const std::size_t SIZE_T_ONE = 1;
+    const std::string STR_EMPTY{};
+    const char CHAR_EMPTY{};
 }
 
 namespace huffman_compression
@@ -65,6 +68,8 @@ namespace huffman_compression
 
         static std::size_t
         ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap);
+
+        static std::size_t GetSizeOfFile(std::ifstream &in);
     };
 
     struct frequency_table
