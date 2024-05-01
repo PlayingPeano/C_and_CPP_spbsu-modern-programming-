@@ -84,7 +84,7 @@ namespace huffman_compression
 
         std::size_t operator[](char value);
 
-        std::size_t GetSizeOfTable() const;
+        [[nodiscard]] std::size_t GetSizeOfTable() const;
     };
 
     class node
@@ -110,13 +110,13 @@ namespace huffman_compression
                                             _right(std::move(right))
         {}
 
-        char GetValue() const;
+        [[nodiscard]] char GetValue() const;
 
-        std::size_t GetFrequency() const;
+        [[nodiscard]] std::size_t GetFrequency() const;
 
-        std::shared_ptr<node> GetLeft() const;
+        [[nodiscard]] std::shared_ptr<node> GetLeft() const;
 
-        std::shared_ptr<node> GetRight() const;
+        [[nodiscard]] std::shared_ptr<node> GetRight() const;
     };
 
     class tree
@@ -133,7 +133,7 @@ namespace huffman_compression
 
         explicit tree(const frequency_table &table);
 
-        std::shared_ptr<node> GetRoot() const;
+        [[nodiscard]] std::shared_ptr<node> GetRoot() const;
 
         std::string GetHuffmanCodeForByte(char value);
 
