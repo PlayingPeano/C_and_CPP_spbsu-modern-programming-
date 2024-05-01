@@ -110,14 +110,29 @@ namespace compressing_tests
     {
         std::string inputFilename = "samples/empty.txt";
         std::string outputFilename = "samples/emptyC.txt";
+        std::ifstream in(inputFilename);
+        CHECK(in.is_open());
+        std::ofstream out(outputFilename);
+        CHECK(out.is_open());
+
         std::tuple<std::size_t, std::size_t, std::size_t> result1 = huffman_compression::huffman::Compress(
-                inputFilename, outputFilename);
+                in, out);
         CHECK((std::get<0>(result1) == 0 && std::get<1>(result1) == 0 && std::get<2>(result1) == 0));
 
+        in.close();
+        out.close();
+
+        std::ifstream inC(outputFilename);
+        CHECK(inC.is_open());
         std::string decompressedFilename = "samples/emptyD.txt";
+        std::ofstream outD(decompressedFilename);
+        CHECK(outD.is_open());
         std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::huffman::Decompress(
-                outputFilename, decompressedFilename);
+                inC, outD);
         CHECK((std::get<0>(result2) == 0 && std::get<1>(result2) == 0 && std::get<2>(result2) == 0));
+
+        inC.close();
+        outD.close();
     }
 
     TEST_CASE("All bytes")
@@ -131,11 +146,21 @@ namespace compressing_tests
         }
         out1.close();
 
+        std::ifstream in(inputFilename);
+        CHECK(in.is_open());
         std::string compressedFilename = "samples/allBytesC.txt";
-        huffman_compression::huffman::Compress(inputFilename, compressedFilename);
+        std::ofstream outC(compressedFilename);
+        huffman_compression::huffman::Compress(in, outC);
+        in.close();
+        outC.close();
 
+        std::ifstream inC(compressedFilename);
+        CHECK(inC.is_open());
         std::string decompressedFilename = "samples/allBytesD.txt";
-        huffman_compression::huffman::Decompress(compressedFilename, decompressedFilename);
+        std::ofstream outD(decompressedFilename);
+        CHECK(outD.is_open());
+
+        huffman_compression::huffman::Decompress(inC, outD);
 
         std::ifstream i(decompressedFilename);
         std::ifstream i2(inputFilename);
@@ -154,19 +179,35 @@ namespace compressing_tests
     {
         std::string inputFilename = "samples/book-war-and-peace.txt";
         std::string compressedFilename = "samples/book-war-and-peaceC.bin";
+        std::ifstream in(inputFilename);
+        CHECK(in.is_open());
+
+        std::ofstream outC(compressedFilename);
+        CHECK(outC.is_open());
+
+        huffman_compression::huffman::Compress(in, outC);
+        in.close();
+        outC.close();
+
         std::string decompressedFilename = "samples/book-war-and-peaceD.txt";
-        huffman_compression::huffman::Compress(inputFilename, compressedFilename);
-        huffman_compression::huffman::Decompress(compressedFilename, decompressedFilename);
-        std::ifstream in(decompressedFilename);
-        std::ifstream in2(inputFilename);
-        while (!in.eof() && !in2.eof())
+        std::ofstream outD(decompressedFilename);
+        CHECK(outD.is_open());
+
+        std::ifstream inC(compressedFilename);
+        CHECK(inC.is_open());
+
+        huffman_compression::huffman::Decompress(inC, outD);
+
+        std::ifstream inD(decompressedFilename);
+        std::ifstream inF(inputFilename);
+        while (!inD.eof() && !inF.eof())
         {
             char ch1, ch2;
-            in.read(&ch1, 1);
-            in2.read(&ch2, 1);
+            inD.read(&ch1, 1);
+            inF.read(&ch2, 1);
             CHECK(ch1 == ch2);
         }
-        in.close();
-        in2.close();
+        inD.close();
+        inF.close();
     }
 }
