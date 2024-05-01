@@ -31,6 +31,7 @@ int main(int argc, char **argv)
             OutFile = std::string(argv[i++ + 1]);
         } else
         {
+            std::cerr << "Wrong args, check documentation" << std::endl;
             return -1;
         }
     }
@@ -61,9 +62,9 @@ int main(int argc, char **argv)
             in.close();
             out.close();
         }
-        catch (std::invalid_argument &exception)
+        catch (std::exception &ex)
         {
-            std::cerr << exception.what() << std::endl;
+            std::cerr << ex.what() << std::endl;
             return -1;
         }
     } else
@@ -91,9 +92,9 @@ int main(int argc, char **argv)
             in.close();
             out.close();
         }
-        catch (std::invalid_argument &exception)
+        catch (std::exception &ex)
         {
-            std::cerr << exception.what() << std::endl;
+            std::cerr << ex.what() << std::endl;
             return -1;
         }
     }

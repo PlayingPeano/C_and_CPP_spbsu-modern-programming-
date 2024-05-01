@@ -10,6 +10,16 @@
 #include <filesystem>
 #include "bitstream.h"
 
+namespace huffman_exceptions
+{
+    HuffmanException::HuffmanException(std::string message) : _message(std::move(message))
+    {}
+
+    const char *HuffmanException::what() const noexcept
+    {
+        return _message.c_str();
+    }
+}
 
 namespace huffman_compression
 {
@@ -125,8 +135,8 @@ namespace huffman_compression
         {
             if (current == _root)
             {
-                huffman_codes_for_bytes[current->GetValue()] = "0";
-                bytes_for_huffman_codes["0"] = current->GetValue();
+                huffman_codes_for_bytes[current->GetValue()] = huffman_constants::STR_ZERO;
+                bytes_for_huffman_codes[huffman_constants::STR_ZERO] = current->GetValue();
             } else
             {
                 huffman_codes_for_bytes[current->GetValue()] = code;
@@ -135,8 +145,8 @@ namespace huffman_compression
             return;
         }
 
-        ObtainHuffmanCodes(current->GetLeft(), code + "0");
-        ObtainHuffmanCodes(current->GetRight(), code + "1");
+        ObtainHuffmanCodes(current->GetLeft(), code + huffman_constants::STR_ZERO);
+        ObtainHuffmanCodes(current->GetRight(), code + huffman_constants::STR_ONE);
     }
 
     std::shared_ptr<node> tree::GetRoot() const
@@ -168,7 +178,7 @@ namespace huffman_compression
         data.resize(fileSize);
         if (!in.read(data.data(), fileSize))
         {
-            throw std::runtime_error("Can't read input file");
+            throw huffman_exceptions::HuffmanException("Can't read input file");
         }
     }
 
@@ -192,7 +202,7 @@ namespace huffman_compression
             if (!out.write(reinterpret_cast<const char *>(&key), sizeof(key)) ||
                 !out.write(reinterpret_cast<const char *>(&value), sizeof(value)))
             {
-                throw std::runtime_error("Can't write data to output file");
+                throw huffman_exceptions::HuffmanException("Can't write data to output file");
             }
             additionalSize += sizeof(key) + sizeof(value);
         }
@@ -208,15 +218,15 @@ namespace huffman_compression
         std::size_t codedTextSize = codedText.size();
         if (!out.write(reinterpret_cast<const char *>(&codedTextSize), sizeof(codedTextSize)))
         {
-            throw std::runtime_error("Can't write data to output file");
+            throw huffman_exceptions::HuffmanException("Can't write data to output file");
         }
         additionalSize += sizeof(codedTextSize);
 
-        while (codedText.size() % 8 != 0)
+        while (codedText.size() % huffman_constants::BITS_IN_ONE_BYTE != 0)
         {
-            codedText.append("0");
+            codedText.append(huffman_constants::STR_ZERO);
         }
-        compressedSize = codedText.size() / 8;
+        compressedSize = codedText.size() / huffman_constants::BITS_IN_ONE_BYTE;
 
         bitstream::write(codedText, out);
 
@@ -239,7 +249,7 @@ namespace huffman_compression
         std::size_t tableSize = 0;
         if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
         {
-            throw std::runtime_error("Can't read table size");
+            throw huffman_exceptions::HuffmanException("Can't read table size");
         }
 
         for (std::size_t i = 0; i < tableSize; ++i)
@@ -249,7 +259,7 @@ namespace huffman_compression
             if (!in.read(reinterpret_cast<char *>(&key), sizeof(key)) ||
                 !in.read(reinterpret_cast<char *>(&value), sizeof(value)))
             {
-                throw std::runtime_error("Can't read table");
+                throw huffman_exceptions::HuffmanException("Can't read table");
             }
             table[key] = value;
         }
@@ -263,11 +273,11 @@ namespace huffman_compression
 
         if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
         {
-            throw std::runtime_error("Can't read input file");
+            throw huffman_exceptions::HuffmanException("Can't read input file");
         }
 
         data = bitstream::read(codedTextSize, in, decodedMap);
-        return (codedTextSize + 7) / 8;
+        return (codedTextSize + 7) / huffman_constants::BITS_IN_ONE_BYTE;
     }
 
     std::tuple<std::size_t, std::size_t, std::size_t>

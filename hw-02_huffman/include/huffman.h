@@ -11,11 +11,26 @@
 #include <tuple>
 #include <filesystem>
 #include <vector>
+#include <exception>
+
+namespace huffman_exceptions
+{
+    class HuffmanException : public std::exception
+    {
+    private:
+        std::string _message{};
+    public:
+        explicit HuffmanException(std::string message);
+
+        const char *what() const noexcept override;
+    };
+}
 
 namespace huffman_constants
 {
-    const std::size_t NUMBER_OF_POSSIBLE_BYTES = 256;
-    const int ABS_OF_MIN_CHAR = 128;
+    const std::string STR_ZERO = "0";
+    const std::string STR_ONE = "1";
+    const std::size_t BITS_IN_ONE_BYTE = 8;
 }
 
 namespace huffman_compression
