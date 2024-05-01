@@ -120,7 +120,7 @@ namespace huffman_compression
         {
             _root = pq.top();
             pq.pop();
-            ObtainHuffmanCodes(_root, "");
+            ObtainHuffmanCodes(_root, std::string{});
         }
     }
 
