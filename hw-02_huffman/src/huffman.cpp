@@ -51,19 +51,9 @@ namespace huffman_compression
         return _value;
     }
 
-    void node::SetValue(char value)
-    {
-        _value = value;
-    }
-
     std::size_t node::GetFrequency() const
     {
         return _frequency;
-    }
-
-    void node::SetFrequency(std::size_t frequency)
-    {
-        _frequency = frequency;
     }
 
     std::shared_ptr<node> node::GetLeft() const
@@ -71,19 +61,9 @@ namespace huffman_compression
         return _left;
     }
 
-    void node::SetLeft(std::shared_ptr<node> left)
-    {
-        _left = std::move(left);
-    }
-
     std::shared_ptr<node> node::GetRight() const
     {
         return _right;
-    }
-
-    void node::SetRight(std::shared_ptr<node> right)
-    {
-        _right = std::move(right);
     }
 
     tree::tree()

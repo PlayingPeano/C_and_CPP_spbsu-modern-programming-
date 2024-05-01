@@ -112,19 +112,11 @@ namespace huffman_compression
 
         char GetValue() const;
 
-        void SetValue(char value);
-
         std::size_t GetFrequency() const;
-
-        void SetFrequency(std::size_t frequency);
 
         std::shared_ptr<node> GetLeft() const;
 
-        void SetLeft(std::shared_ptr<node> left);
-
         std::shared_ptr<node> GetRight() const;
-
-        void SetRight(std::shared_ptr<node> right);
     };
 
     class tree

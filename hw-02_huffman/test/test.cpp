@@ -161,7 +161,9 @@ namespace compressing_tests
         CHECK(outD.is_open());
 
         huffman_compression::huffman::Decompress(inC, outD);
-
+        inC.close();
+        outD.close();
+        
         std::ifstream i(decompressedFilename);
         std::ifstream i2(inputFilename);
         while (!i.eof() && !i2.eof())
