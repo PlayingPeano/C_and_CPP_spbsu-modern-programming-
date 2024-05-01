@@ -294,7 +294,8 @@ namespace huffman_compression
 
         out.write(decodedText.c_str(), static_cast<std::streamsize>(decodedText.size()));
 
-        std::size_t additionalSize = 2 * sizeof(std::size_t) + table.size() * (sizeof(std::size_t) + sizeof(char));
+        std::size_t additionalSize =
+                sizeof(std::size_t) + sizeof(std::size_t) + table.size() * (sizeof(std::size_t) + sizeof(char));
         return {compressedDataSize, decodedText.size(),
                 additionalSize};
     }
