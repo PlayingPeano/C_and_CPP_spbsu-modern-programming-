@@ -159,14 +159,8 @@ namespace huffman_compression
         return bytes_for_huffman_codes;
     }
 
-    void huffman::GetDataFromFile(const std::string &filename, std::vector<char> &data)
+    void huffman::GetDataFromFile(std::ifstream &in, std::vector<char> &data)
     {
-        std::ifstream in(filename, std::ios::binary);
-        if (!in.is_open())
-        {
-            throw std::runtime_error("Can't open input file");
-        }
-
         in.seekg(0, std::ios::end);
         std::streampos fileSize = in.tellg();
         in.seekg(0, std::ios::beg);
@@ -174,33 +168,18 @@ namespace huffman_compression
         data.resize(fileSize);
         if (!in.read(data.data(), fileSize))
         {
-            in.close();
             throw std::runtime_error("Can't read input file");
         }
-
-        in.close();
     }
 
     std::pair<std::size_t, std::size_t>
-    huffman::WriteCompressedDataToFile(const std::string &fileName, std::vector<char> &data)
+    huffman::WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data)
     {
         std::size_t additionalSize = 0;
         std::size_t compressedSize = 0;
         if (data.empty())
         {
-            std::ofstream out(fileName, std::ios::binary | std::ios::trunc);
-            if (!out.is_open())
-            {
-                throw std::runtime_error("Can't open output file");
-            }
-            out.close();
             return {additionalSize, compressedSize};
-        }
-
-        std::ofstream out(fileName, std::ios::binary | std::ios::trunc);
-        if (!out.is_open())
-        {
-            throw std::runtime_error("Can't open output file");
         }
 
         frequency_table frequencyTable(data);
@@ -213,7 +192,6 @@ namespace huffman_compression
             if (!out.write(reinterpret_cast<const char *>(&key), sizeof(key)) ||
                 !out.write(reinterpret_cast<const char *>(&value), sizeof(value)))
             {
-                out.close();
                 throw std::runtime_error("Can't write data to output file");
             }
             additionalSize += sizeof(key) + sizeof(value);
@@ -230,7 +208,6 @@ namespace huffman_compression
         std::size_t codedTextSize = codedText.size();
         if (!out.write(reinterpret_cast<const char *>(&codedTextSize), sizeof(codedTextSize)))
         {
-            out.close();
             throw std::runtime_error("Can't write data to output file");
         }
         additionalSize += sizeof(codedTextSize);
@@ -242,18 +219,17 @@ namespace huffman_compression
         compressedSize = codedText.size() / 8;
 
         bitstream::write(codedText, out);
-        out.close();
 
         return {additionalSize, compressedSize};
     }
 
     std::tuple<std::size_t, std::size_t, std::size_t>
-    huffman::Compress(std::string &in_filename, std::string &out_filename)
+    huffman::Compress(std::ifstream &in, std::ofstream &out)
     {
         std::vector<char> data;
-        GetDataFromFile(in_filename, data);
+        GetDataFromFile(in, data);
 
-        auto [additionalSize, compressedSize] = WriteCompressedDataToFile(out_filename, data);
+        auto [additionalSize, compressedSize] = WriteCompressedDataToFile(out, data);
 
         return {data.size(), compressedSize, additionalSize};
     }
@@ -295,15 +271,8 @@ namespace huffman_compression
     }
 
     std::tuple<std::size_t, std::size_t, std::size_t>
-    huffman::Decompress(std::string &in_filename, std::string &out_filename)
+    huffman::Decompress(std::ifstream &in, std::ofstream &out)
     {
-        std::ifstream in(in_filename, std::ios::binary);
-
-        if (!in.is_open())
-        {
-            throw std::runtime_error("Can't open input file");
-        }
-
         in.seekg(0, std::ios::end);
         std::streampos fileSize = in.tellg();
         in.seekg(0, std::ios::beg);
@@ -322,12 +291,6 @@ namespace huffman_compression
         std::size_t compressedDataSize = huffman::ReadEncodedDataToString(in, decodedText,
                                                                           treeWithCodes.GetMapBytesForHuffmanCodes());
         in.close();
-
-        std::ofstream out(out_filename, std::ios::binary);
-        if (!out.is_open())
-        {
-            throw std::runtime_error("Can't open output file");
-        }
 
         out.write(decodedText.c_str(), static_cast<std::streamsize>(decodedText.size()));
         out.close();

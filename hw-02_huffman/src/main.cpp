@@ -41,14 +41,13 @@ int main(int argc, char **argv)
         {
             std::ifstream in(InFile, std::ios::binary);
             std::ofstream out(OutFile, std::ios::binary);
-            in.close();
-            out.close();
-
             auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Compress(
-                    InFile,
-                    OutFile);
+                    in,
+                    out);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
+            in.close();
+            out.close();
         }
         catch (std::invalid_argument &exception)
         {
@@ -61,14 +60,14 @@ int main(int argc, char **argv)
         {
             std::ifstream in(InFile, std::ios::binary);
             std::ofstream out(OutFile, std::ios::binary);
-            in.close();
-            out.close();
 
             auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Decompress(
-                    InFile,
-                    OutFile);
+                    in,
+                    out);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
                       << std::endl;
+            in.close();
+            out.close();
         }
         catch (std::invalid_argument &exception)
         {

@@ -32,16 +32,16 @@ namespace huffman_compression
     {
     public:
         static std::tuple<std::size_t, std::size_t, std::size_t>
-        Compress(std::string &in_filename, std::string &out_filename);
+        Compress(std::ifstream &in, std::ofstream &out);
 
         static std::tuple<std::size_t, std::size_t, std::size_t>
-        Decompress(std::string &in_filename, std::string &out_filename);
+        Decompress(std::ifstream &in, std::ofstream &out);
 
     private:
-        static void GetDataFromFile(const std::string &filename, std::vector<char> &data);
+        static void GetDataFromFile(std::ifstream &in, std::vector<char> &data);
 
         static std::pair<std::size_t, std::size_t>
-        WriteCompressedDataToFile(const std::string &filename, std::vector<char> &data);
+        WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data);
 
         static void ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table);
 
