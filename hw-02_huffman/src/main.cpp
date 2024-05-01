@@ -40,7 +40,19 @@ int main(int argc, char **argv)
         try
         {
             std::ifstream in(InFile, std::ios::binary);
-            std::ofstream out(OutFile, std::ios::binary);
+            if (!in.is_open())
+            {
+                std::cerr << "Can't open input file" << std::endl;
+                return -1;
+            }
+
+            std::ofstream out(OutFile, std::ios::binary | std::ios::trunc);
+            if(!out.is_open())
+            {
+                std::cerr << "Can't open output file" << std::endl;
+                return -1;
+            }
+
             auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Compress(
                     in,
                     out);
@@ -59,7 +71,17 @@ int main(int argc, char **argv)
         try
         {
             std::ifstream in(InFile, std::ios::binary);
+            if (!in.is_open())
+            {
+                std::cerr << "Can't open input file" << std::endl;
+                return -1;
+            }
             std::ofstream out(OutFile, std::ios::binary);
+            if(!out.is_open())
+            {
+                std::cerr << "Can't open output file" << std::endl;
+                return -1;
+            }
 
             auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Decompress(
                     in,
