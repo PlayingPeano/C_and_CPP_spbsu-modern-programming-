@@ -20,6 +20,14 @@ namespace huffman_constants
 
 namespace huffman_compression
 {
+    struct frequency_table;
+
+    class huffman;
+
+    class node;
+
+    class tree;
+
     class huffman
     {
     public:
@@ -34,6 +42,11 @@ namespace huffman_compression
 
         static std::pair<std::size_t, std::size_t>
         WriteCompressedDataToFile(const std::string &filename, std::vector<char> &data);
+
+        static void ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table);
+
+        static std::size_t
+        ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap);
     };
 
     struct frequency_table

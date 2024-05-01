@@ -181,13 +181,14 @@ namespace huffman_compression
         in.close();
     }
 
-    std::pair<std::size_t, std::size_t> huffman::WriteCompressedDataToFile(const std::string &fileName, std::vector<char> &data)
+    std::pair<std::size_t, std::size_t>
+    huffman::WriteCompressedDataToFile(const std::string &fileName, std::vector<char> &data)
     {
         std::size_t additionalSize = 0;
         std::size_t compressedSize = 0;
         if (data.empty())
         {
-            std::ofstream out(fileName, std::ios::binary);
+            std::ofstream out(fileName, std::ios::binary | std::ios::trunc);
             if (!out.is_open())
             {
                 throw std::runtime_error("Can't open output file");
@@ -196,7 +197,7 @@ namespace huffman_compression
             return {additionalSize, compressedSize};
         }
 
-        std::ofstream out(fileName, std::ios::binary);
+        std::ofstream out(fileName, std::ios::binary | std::ios::trunc);
         if (!out.is_open())
         {
             throw std::runtime_error("Can't open output file");
@@ -257,10 +258,45 @@ namespace huffman_compression
         return {data.size(), compressedSize, additionalSize};
     }
 
+    void huffman::ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table)
+    {
+        std::size_t tableSize = 0;
+        if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
+        {
+            throw std::runtime_error("Can't read table size");
+        }
+
+        for (std::size_t i = 0; i < tableSize; ++i)
+        {
+            char key = 0;
+            std::size_t value = 0;
+            if (!in.read(reinterpret_cast<char *>(&key), sizeof(key)) ||
+                !in.read(reinterpret_cast<char *>(&value), sizeof(value)))
+            {
+                throw std::runtime_error("Can't read table");
+            }
+            table[key] = value;
+        }
+
+    }
+
+    std::size_t
+    huffman::ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap)
+    {
+        std::size_t codedTextSize = 0;
+
+        if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
+        {
+            throw std::runtime_error("Can't read input file");
+        }
+
+        data = bitstream::read(codedTextSize, in, decodedMap);
+        return (codedTextSize + 7) / 8;
+    }
+
     std::tuple<std::size_t, std::size_t, std::size_t>
     huffman::Decompress(std::string &in_filename, std::string &out_filename)
     {
-        std::tuple<std::size_t, std::size_t, std::size_t> result = {0, 0, 0};
         std::ifstream in(in_filename, std::ios::binary);
 
         if (!in.is_open())
@@ -271,45 +307,20 @@ namespace huffman_compression
         in.seekg(0, std::ios::end);
         std::streampos fileSize = in.tellg();
         in.seekg(0, std::ios::beg);
-        std::size_t tableSize = 0;
-        if (fileSize)
+        if (fileSize == 0)
         {
-            if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
-            {
-                throw std::runtime_error("Can't read input file");
-            }
-            std::get<2>(result) = sizeof(tableSize);
+            return {0, 0, 0};
         }
 
         std::map<char, std::size_t> table;
-        for (std::size_t i = 0; i < tableSize; ++i)
-        {
-            char ch = 0;
-            std::size_t frequency = 0;
-            if (!in.read(&ch, sizeof(ch)) || !in.read(reinterpret_cast<char *>(&frequency), sizeof(frequency)))
-            {
-                throw std::runtime_error("Can't read input file");
-            }
-
-            table[ch] = frequency;
-
-            std::get<2>(result) += sizeof(ch) + sizeof(frequency);
-        }
+        huffman::ReadFrequencyTable(in, table);
 
         frequency_table frequencyTable(table);
         tree treeWithCodes(frequencyTable);
 
-        std::size_t codedTextSize = 0;
-        if (fileSize)
-        {
-            if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
-            {
-                throw std::runtime_error("Can't read input file");
-            }
-            std::get<2>(result) += sizeof(codedTextSize);
-            std::get<0>(result) = (codedTextSize + 7) / 8;
-        }
-        std::string decodedText = bitstream::read(codedTextSize, in, treeWithCodes.GetMapBytesForHuffmanCodes());
+        std::string decodedText;
+        std::size_t compressedDataSize = huffman::ReadEncodedDataToString(in, decodedText,
+                                                                          treeWithCodes.GetMapBytesForHuffmanCodes());
         in.close();
 
         std::ofstream out(out_filename, std::ios::binary);
@@ -320,8 +331,9 @@ namespace huffman_compression
 
         out.write(decodedText.c_str(), static_cast<std::streamsize>(decodedText.size()));
         out.close();
-        std::get<1>(result) = decodedText.size();
 
-        return result;
+        std::size_t additionalSize = 2 * sizeof(std::size_t) + table.size() * (sizeof(std::size_t) + sizeof(char));
+        return {compressedDataSize, decodedText.size(),
+                additionalSize};
     }
 }
