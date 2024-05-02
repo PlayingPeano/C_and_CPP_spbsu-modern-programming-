@@ -25,9 +25,9 @@ namespace bitstream
         static std::string decodedText;
         static std::string codedText;
 
-//        std::size_t sizeOfGarbageBits =
-//                (huffman_constants::BITS_IN_ONE_BYTE - (codedTextSize % huffman_constants::BITS_IN_ONE_BYTE)) %
-//                huffman_constants::BITS_IN_ONE_BYTE;
+        std::size_t sizeOfGarbageBits =
+                (huffman_constants::BITS_IN_ONE_BYTE - (codedTextSize % huffman_constants::BITS_IN_ONE_BYTE)) %
+                huffman_constants::BITS_IN_ONE_BYTE;
 
         std::size_t add = static_cast<int>((codedTextSize %
                                            huffman_constants::BITS_IN_ONE_BYTE) !=
