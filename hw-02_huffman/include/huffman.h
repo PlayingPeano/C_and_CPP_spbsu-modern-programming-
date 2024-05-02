@@ -22,7 +22,7 @@ namespace huffman_exceptions
     public:
         explicit HuffmanException(std::string message);
 
-        const char *what() const noexcept override;
+        [[nodiscard]] const char *what() const noexcept override;
     };
 }
 
@@ -39,35 +39,36 @@ namespace huffman_constants
     const char CHAR_EMPTY{};
 }
 
+namespace huffman_help_functions
+{
+    void GetDataFromFile(std::ifstream &in, std::vector<char> &data);
+
+    std::pair<std::size_t, std::size_t>
+    WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data);
+
+    void ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table);
+
+    std::size_t
+    ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap);
+
+    std::size_t GetSizeOfFile(std::ifstream &in);
+}
+
 namespace huffman_compression
 {
     struct frequency_table;
+
     class huffman;
+
     class node;
+
     class tree;
 
-    class huffman
-    {
-    public:
-        static std::tuple<std::size_t, std::size_t, std::size_t>
-        Compress(std::ifstream &in, std::ofstream &out);
+    std::tuple<std::size_t, std::size_t, std::size_t>
+    Compress(std::ifstream &in, std::ofstream &out);
 
-        static std::tuple<std::size_t, std::size_t, std::size_t>
-        Decompress(std::ifstream &in, std::ofstream &out);
-
-    private:
-        static void GetDataFromFile(std::ifstream &in, std::vector<char> &data);
-
-        static std::pair<std::size_t, std::size_t>
-        WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data);
-
-        static void ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table);
-
-        static std::size_t
-        ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap);
-
-        static std::size_t GetSizeOfFile(std::ifstream &in);
-    };
+    std::tuple<std::size_t, std::size_t, std::size_t>
+    Decompress(std::ifstream &in, std::ofstream &out);
 
     struct frequency_table
     {
@@ -94,7 +95,8 @@ namespace huffman_compression
         std::shared_ptr<node> _right = nullptr;
 
     public:
-        node() : _value(huffman_constants::SIZE_T_ZERO), _frequency(huffman_constants::SIZE_T_ZERO), _left(nullptr), _right(nullptr)
+        node() : _value(huffman_constants::SIZE_T_ZERO), _frequency(huffman_constants::SIZE_T_ZERO), _left(nullptr),
+                 _right(nullptr)
         {}
 
         node(char value, std::size_t frequency) : _value(value), _frequency(frequency), _left(nullptr),

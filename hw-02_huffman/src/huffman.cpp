@@ -21,6 +21,114 @@ namespace huffman_exceptions
     }
 }
 
+namespace huffman_help_functions
+{
+    std::size_t GetSizeOfFile(std::ifstream &in)
+    {
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::end);
+        std::streampos fileSize = in.tellg();
+        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::beg);
+        return static_cast<std::size_t>(fileSize);
+    }
+
+    void GetDataFromFile(std::ifstream &in, std::vector<char> &data)
+    {
+        std::size_t fileSize = GetSizeOfFile(in);
+        data.resize(fileSize);
+        if (!in.read(data.data(), fileSize))
+        {
+            throw huffman_exceptions::HuffmanException("Can't read input file");
+        }
+    }
+
+    std::pair<std::size_t, std::size_t>
+    WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data)
+    {
+        std::size_t additionalSize = huffman_constants::SIZE_T_ZERO;
+        std::size_t compressedSize = huffman_constants::SIZE_T_ZERO;
+        if (data.empty())
+        {
+            return {additionalSize, compressedSize};
+        }
+
+        huffman_compression::frequency_table frequencyTable(data);
+        std::size_t tableSize = frequencyTable.GetSizeOfTable();
+        additionalSize += sizeof(tableSize);
+        out.write(reinterpret_cast<const char *>(&tableSize), sizeof(tableSize));
+
+        for (const auto &[key, value]: frequencyTable._table)
+        {
+            if (!out.write(reinterpret_cast<const char *>(&key), sizeof(key)) ||
+                !out.write(reinterpret_cast<const char *>(&value), sizeof(value)))
+            {
+                throw huffman_exceptions::HuffmanException("Can't write data to output file");
+            }
+            additionalSize += sizeof(key) + sizeof(value);
+        }
+
+        huffman_compression::tree treeWithCodes(frequencyTable);
+
+        std::string codedText;
+        for (char ch: data)
+        {
+            codedText.append(treeWithCodes.GetHuffmanCodeForByte(ch));
+        }
+
+        std::size_t codedTextSize = codedText.size();
+        if (!out.write(reinterpret_cast<const char *>(&codedTextSize), sizeof(codedTextSize)))
+        {
+            throw huffman_exceptions::HuffmanException("Can't write data to output file");
+        }
+        additionalSize += sizeof(codedTextSize);
+
+        while (codedText.size() % huffman_constants::BITS_IN_ONE_BYTE != huffman_constants::SIZE_T_ZERO)
+        {
+            codedText.append(huffman_constants::STR_ZERO);
+        }
+        compressedSize = codedText.size() / huffman_constants::BITS_IN_ONE_BYTE;
+
+        bitstream::write(codedText, out);
+
+        return {additionalSize, compressedSize};
+    }
+
+    void ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table)
+    {
+        std::size_t tableSize = huffman_constants::SIZE_T_ZERO;
+        if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
+        {
+            throw huffman_exceptions::HuffmanException("Can't read table size");
+        }
+
+        for (std::size_t i = huffman_constants::SIZE_T_ZERO; i < tableSize; ++i)
+        {
+            char key{};
+            std::size_t value = huffman_constants::SIZE_T_ZERO;
+            if (!in.read(reinterpret_cast<char *>(&key), sizeof(key)) ||
+                !in.read(reinterpret_cast<char *>(&value), sizeof(value)))
+            {
+                throw huffman_exceptions::HuffmanException("Can't read table");
+            }
+            table[key] = value;
+        }
+    }
+
+    std::size_t
+    ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap)
+    {
+        std::size_t codedTextSize = huffman_constants::SIZE_T_ZERO;
+
+        if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
+        {
+            throw huffman_exceptions::HuffmanException("Can't read input file");
+        }
+
+        data = bitstream::read(codedTextSize, in, decodedMap);
+        return codedTextSize / huffman_constants::BITS_IN_ONE_BYTE +
+               static_cast<int>(codedTextSize % huffman_constants::BITS_IN_ONE_BYTE != huffman_constants::SIZE_T_ZERO);
+    }
+}
+
 namespace huffman_compression
 {
     frequency_table::frequency_table(std::map<char, std::size_t> table)
@@ -129,13 +237,7 @@ namespace huffman_compression
         ObtainHuffmanCodes(current->GetRight(), code + huffman_constants::STR_ONE);
     }
 
-    std::size_t huffman::GetSizeOfFile(std::ifstream &in)
-    {
-        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::end);
-        std::streampos fileSize = in.tellg();
-        in.seekg(huffman_constants::SIZE_T_ZERO, std::ios::beg);
-        return static_cast<std::size_t>(fileSize);
-    }
+
 
     std::shared_ptr<node> tree::GetRoot() const
     {
@@ -165,131 +267,36 @@ namespace huffman_compression
         return bytes_for_huffman_codes;
     }
 
-    void huffman::GetDataFromFile(std::ifstream &in, std::vector<char> &data)
-    {
-        std::size_t fileSize = huffman::GetSizeOfFile(in);
-        data.resize(fileSize);
-        if (!in.read(data.data(), fileSize))
-        {
-            throw huffman_exceptions::HuffmanException("Can't read input file");
-        }
-    }
 
-    std::pair<std::size_t, std::size_t>
-    huffman::WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data)
-    {
-        std::size_t additionalSize = huffman_constants::SIZE_T_ZERO;
-        std::size_t compressedSize = huffman_constants::SIZE_T_ZERO;
-        if (data.empty())
-        {
-            return {additionalSize, compressedSize};
-        }
-
-        frequency_table frequencyTable(data);
-        std::size_t tableSize = frequencyTable.GetSizeOfTable();
-        additionalSize += sizeof(tableSize);
-        out.write(reinterpret_cast<const char *>(&tableSize), sizeof(tableSize));
-
-        for (const auto &[key, value]: frequencyTable._table)
-        {
-            if (!out.write(reinterpret_cast<const char *>(&key), sizeof(key)) ||
-                !out.write(reinterpret_cast<const char *>(&value), sizeof(value)))
-            {
-                throw huffman_exceptions::HuffmanException("Can't write data to output file");
-            }
-            additionalSize += sizeof(key) + sizeof(value);
-        }
-
-        tree treeWithCodes(frequencyTable);
-
-        std::string codedText;
-        for (char ch: data)
-        {
-            codedText.append(treeWithCodes.GetHuffmanCodeForByte(ch));
-        }
-
-        std::size_t codedTextSize = codedText.size();
-        if (!out.write(reinterpret_cast<const char *>(&codedTextSize), sizeof(codedTextSize)))
-        {
-            throw huffman_exceptions::HuffmanException("Can't write data to output file");
-        }
-        additionalSize += sizeof(codedTextSize);
-
-        while (codedText.size() % huffman_constants::BITS_IN_ONE_BYTE != huffman_constants::SIZE_T_ZERO)
-        {
-            codedText.append(huffman_constants::STR_ZERO);
-        }
-        compressedSize = codedText.size() / huffman_constants::BITS_IN_ONE_BYTE;
-
-        bitstream::write(codedText, out);
-
-        return {additionalSize, compressedSize};
-    }
 
     std::tuple<std::size_t, std::size_t, std::size_t>
-    huffman::Compress(std::ifstream &in, std::ofstream &out)
+    Compress(std::ifstream &in, std::ofstream &out)
     {
         std::vector<char> data{};
-        GetDataFromFile(in, data);
+        huffman_help_functions::GetDataFromFile(in, data);
 
-        auto [additionalSize, compressedSize] = WriteCompressedDataToFile(out, data);
+        auto [additionalSize, compressedSize] = huffman_help_functions::WriteCompressedDataToFile(out, data);
 
         return {data.size(), compressedSize, additionalSize};
     }
 
-    void huffman::ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table)
-    {
-        std::size_t tableSize = huffman_constants::SIZE_T_ZERO;
-        if (!in.read(reinterpret_cast<char *>(&tableSize), sizeof(tableSize)))
-        {
-            throw huffman_exceptions::HuffmanException("Can't read table size");
-        }
-
-        for (std::size_t i = huffman_constants::SIZE_T_ZERO; i < tableSize; ++i)
-        {
-            char key{};
-            std::size_t value = huffman_constants::SIZE_T_ZERO;
-            if (!in.read(reinterpret_cast<char *>(&key), sizeof(key)) ||
-                !in.read(reinterpret_cast<char *>(&value), sizeof(value)))
-            {
-                throw huffman_exceptions::HuffmanException("Can't read table");
-            }
-            table[key] = value;
-        }
-    }
-
-    std::size_t
-    huffman::ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap)
-    {
-        std::size_t codedTextSize = huffman_constants::SIZE_T_ZERO;
-
-        if (!in.read(reinterpret_cast<char *>(&codedTextSize), sizeof(codedTextSize)))
-        {
-            throw huffman_exceptions::HuffmanException("Can't read input file");
-        }
-
-        data = bitstream::read(codedTextSize, in, decodedMap);
-        return codedTextSize / huffman_constants::BITS_IN_ONE_BYTE +
-               static_cast<int>(codedTextSize % huffman_constants::BITS_IN_ONE_BYTE != huffman_constants::SIZE_T_ZERO);
-    }
-
     std::tuple<std::size_t, std::size_t, std::size_t>
-    huffman::Decompress(std::ifstream &in, std::ofstream &out)
+    Decompress(std::ifstream &in, std::ofstream &out)
     {
-        std::size_t fileSize = huffman::GetSizeOfFile(in);
+        std::size_t fileSize = huffman_help_functions::GetSizeOfFile(in);
         if (fileSize == huffman_constants::SIZE_T_ZERO)
         {
             return {huffman_constants::SIZE_T_ZERO, huffman_constants::SIZE_T_ZERO, huffman_constants::SIZE_T_ZERO};
         }
 
         std::map<char, std::size_t> table;
-        huffman::ReadFrequencyTable(in, table);
+        huffman_help_functions::ReadFrequencyTable(in, table);
 
         frequency_table frequencyTable(table);
         tree treeWithCodes(frequencyTable);
 
         std::string decodedText;
-        std::size_t compressedDataSize = huffman::ReadEncodedDataToString(in, decodedText,
+        std::size_t compressedDataSize = huffman_help_functions::ReadEncodedDataToString(in, decodedText,
                                                                           treeWithCodes.GetMapBytesForHuffmanCodes());
 
         out.write(decodedText.c_str(), static_cast<std::streamsize>(decodedText.size()));

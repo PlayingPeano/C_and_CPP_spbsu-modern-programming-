@@ -216,7 +216,7 @@ namespace compressing_and_decompressing_tests
         std::ofstream out(outputFilename);
         CHECK(out.is_open());
 
-        std::tuple<std::size_t, std::size_t, std::size_t> result1 = huffman_compression::huffman::Compress(
+        std::tuple<std::size_t, std::size_t, std::size_t> result1 = huffman_compression::Compress(
                 in, out);
         CHECK((std::get<0>(result1) == 0 && std::get<1>(result1) == 0 && std::get<2>(result1) == 0));
 
@@ -228,7 +228,7 @@ namespace compressing_and_decompressing_tests
         std::string decompressedFilename = "samples/emptyD.txt";
         std::ofstream outD(decompressedFilename);
         CHECK(outD.is_open());
-        std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::huffman::Decompress(
+        std::tuple<std::size_t, std::size_t, std::size_t> result2 = huffman_compression::Decompress(
                 inC, outD);
         CHECK((std::get<0>(result2) == 0 && std::get<1>(result2) == 0 && std::get<2>(result2) == 0));
 
@@ -251,7 +251,7 @@ namespace compressing_and_decompressing_tests
         CHECK(in.is_open());
         std::string compressedFilename = "samples/allBytesC.txt";
         std::ofstream outC(compressedFilename);
-        huffman_compression::huffman::Compress(in, outC);
+        huffman_compression::Compress(in, outC);
         in.close();
         outC.close();
 
@@ -261,7 +261,7 @@ namespace compressing_and_decompressing_tests
         std::ofstream outD(decompressedFilename);
         CHECK(outD.is_open());
 
-        huffman_compression::huffman::Decompress(inC, outD);
+        huffman_compression::Decompress(inC, outD);
         inC.close();
         outD.close();
 
@@ -288,7 +288,7 @@ namespace compressing_and_decompressing_tests
         std::ofstream outC(compressedFilename, std::ios::binary | std::ios::trunc);
         CHECK(outC.is_open());
 
-        huffman_compression::huffman::Compress(in, outC);
+        huffman_compression::Compress(in, outC);
         in.close();
         outC.close();
 
@@ -299,7 +299,7 @@ namespace compressing_and_decompressing_tests
         std::ifstream inC(compressedFilename, std::ios::binary);
         CHECK(inC.is_open());
 
-        huffman_compression::huffman::Decompress(inC, outD);
+        huffman_compression::Decompress(inC, outD);
 
         std::ifstream inD(decompressedFilename, std::ios::binary);
         std::ifstream inF(inputFilename, std::ios::binary);
