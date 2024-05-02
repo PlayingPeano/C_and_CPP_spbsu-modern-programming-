@@ -54,7 +54,7 @@ int main(int argc, char **argv)
                 return -1;
             }
 
-            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Compress(
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::Compress(
                     in,
                     out);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
                 return -1;
             }
 
-            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::huffman::Decompress(
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::Decompress(
                     in,
                     out);
             std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
