@@ -52,7 +52,7 @@ namespace bitstream
                 code.append(byte[j] ? huffman_constants::STR_ONE : huffman_constants::STR_ZERO);
                 if (decodedMap.find(code) != decodedMap.end())
                 {
-                    if (i == numOfBytesInCodedText - 1 && j >= huffman_constants::BITS_IN_ONE_BYTE - sizeOfGarbageBits)
+                    if (i == numOfBytesInCodedText - 1 && j < sizeOfGarbageBits)
                     {
                         ++garbageChars;
                     }
