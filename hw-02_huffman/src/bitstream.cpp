@@ -50,23 +50,27 @@ namespace bitstream
             for (std::size_t j = huffman_constants::SIZE_T_ZERO; j < huffman_constants::BITS_IN_ONE_BYTE; ++j)
             {
                 code.append(byte[j] ? huffman_constants::STR_ONE : huffman_constants::STR_ZERO);
+                if (i == numOfBytesInCodedText - 1 && j == sizeOfGarbageBits - 1)
+                {
+                    code.clear();
+                }
                 if (decodedMap.find(code) != decodedMap.end())
                 {
-                    if (i == numOfBytesInCodedText - 1 && j < sizeOfGarbageBits)
-                    {
-                        ++garbageChars;
-                    }
+//                    if (i == numOfBytesInCodedText - 1 && j < sizeOfGarbageBits)
+//                    {
+//                        ++garbageChars;
+//                    }
                     char res = decodedMap[code];
                     decodedText.append(huffman_constants::SIZE_T_ONE, res);
                     code.clear();
                 }
             }
 
-            while (garbageChars)
-            {
-                --garbageChars;
-                decodedText.pop_back();
-            }
+//            while (garbageChars)
+//            {
+//                --garbageChars;
+//                decodedText.pop_back();
+//            }
         }
         return decodedText;
     }
