@@ -25,9 +25,9 @@ namespace bitstream
         static std::string decodedText;
         static std::string codedText;
 
-        std::size_t sizeOfGarbageBits =
-                (huffman_constants::BITS_IN_ONE_BYTE - (codedTextSize % huffman_constants::BITS_IN_ONE_BYTE)) %
-                huffman_constants::BITS_IN_ONE_BYTE;
+//        std::size_t sizeOfGarbageBits =
+//                (huffman_constants::BITS_IN_ONE_BYTE - (codedTextSize % huffman_constants::BITS_IN_ONE_BYTE)) %
+//                huffman_constants::BITS_IN_ONE_BYTE;
 
         std::size_t add = static_cast<int>((codedTextSize %
                                            huffman_constants::BITS_IN_ONE_BYTE) !=
@@ -50,10 +50,10 @@ namespace bitstream
             for (std::size_t j = huffman_constants::SIZE_T_ZERO; j < huffman_constants::BITS_IN_ONE_BYTE; ++j)
             {
                 code.append(byte[j] ? huffman_constants::STR_ONE : huffman_constants::STR_ZERO);
-//                if (i == numOfBytesInCodedText - 1 && j == sizeOfGarbageBits - 1)
-//                {
-//                    code.clear();
-//                }
+                if (i == numOfBytesInCodedText - 1 && j == sizeOfGarbageBits)
+                {
+                    code.clear();
+                }
                 if (decodedMap.find(code) != decodedMap.end())
                 {
 //                    if (i == numOfBytesInCodedText - 1 && j < sizeOfGarbageBits)
