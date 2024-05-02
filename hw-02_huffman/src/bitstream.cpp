@@ -35,7 +35,7 @@ namespace bitstream
 
         std::size_t numOfBytesInCodedText = codedTextSize / huffman_constants::BITS_IN_ONE_BYTE + add;
 
-        std::size_t garbageChars = huffman_constants::SIZE_T_ZERO;
+//        std::size_t garbageChars = huffman_constants::SIZE_T_ZERO;
         for (std::size_t i = huffman_constants::SIZE_T_ZERO;
              i < numOfBytesInCodedText; ++i)
         {
