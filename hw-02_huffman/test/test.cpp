@@ -2,8 +2,10 @@
 
 #include "test.h"
 #include "huffman.h"
+#include "bitstream.h"
 #include <iostream>
 #include <fstream>
+#include <string>
 
 namespace frequency_table_tests
 {
@@ -48,13 +50,40 @@ namespace frequency_table_tests
         CHECK(ft['c'] == 1);
         CHECK(ft['d'] == 0);
     }
+
+    TEST_CASE("Frequency table GetSizeOfTable")
+    {
+        huffman_compression::frequency_table ft;
+        CHECK(ft.GetSizeOfTable() == 0);
+
+        ft._table = {{'a', 2},
+                     {'b', 3},
+                     {'c', 1}};
+        CHECK(ft.GetSizeOfTable() == 3);
+
+        ft._table['d'] = 0;
+        CHECK(ft.GetSizeOfTable() == 4);
+    }
 }
 
 namespace node_tests
 {
-    TEST_CASE("Smoke")
+    TEST_CASE("Getters")
     {
         huffman_compression::node n;
+        CHECK(n.GetValue() == 0);
+        CHECK(n.GetFrequency() == 0);
+        CHECK(n.GetLeft() == nullptr);
+        CHECK(n.GetRight() == nullptr);
+    }
+
+    TEST_CASE("Default constructor")
+    {
+        huffman_compression::node n;
+        CHECK(n.GetValue() == 0);
+        CHECK(n.GetFrequency() == 0);
+        CHECK(n.GetLeft() == nullptr);
+        CHECK(n.GetRight() == nullptr);
     }
 
     TEST_CASE("Constructor with value and frequency")
@@ -83,8 +112,8 @@ namespace tree_tests
     {
         huffman_compression::tree t;
         CHECK(t.GetRoot() == nullptr);
-        CHECK(t.GetHuffmanCodeForByte('a') == "");
-        CHECK(t.GetByteForHuffmanCode("\0") == '\0');
+        CHECK(t.GetHuffmanCodeForByte('a') == huffman_constants::STR_EMPTY);
+        CHECK(t.GetByteForHuffmanCode(std::string{}) == huffman_constants::CHAR_EMPTY);
     }
 
     TEST_CASE("Constructor with root node")
@@ -104,7 +133,79 @@ namespace tree_tests
     }
 }
 
-namespace compressing_tests
+namespace bitstream_tests
+{
+    TEST_CASE("Smoke")
+    {
+        std::string outputFilename = "test/empty.txt";
+        std::ofstream out(outputFilename);
+        CHECK(out.is_open());
+        std::string bytes{};
+        bitstream::write(bytes, out);
+        out.close();
+
+        std::ifstream in(outputFilename);
+        char ch{};
+        in.read(&ch, 1);
+        CHECK(in.eof());
+        in.close();
+    }
+
+    TEST_CASE("Write some bytes")
+    {
+        std::string outputFilename = "test/allBytesOut.txt";
+        std::ofstream out(outputFilename, std::ios::binary | std::ios::trunc);
+        CHECK(out.is_open());
+        std::string bytes{"000000011111111101111111"};
+        bitstream::write(bytes, out);
+        out.close();
+
+        std::ifstream in(outputFilename, std::ios::binary);
+        CHECK(in.is_open());
+
+        char ch{};
+        in.read(&ch, 1);
+        CHECK(ch == static_cast<char>(-128));
+        in.read(&ch, 1);
+        CHECK(ch == static_cast<char>(255));
+        in.read(&ch, 1);
+        CHECK(ch == static_cast<char>(-2));
+        in.read(&ch, 1);
+        CHECK(in.eof());
+        in.close();
+    }
+
+    TEST_CASE("Read some bytes")
+    {
+        std::string outputFilename = "test/allBytesOut.txt";
+        std::ofstream out(outputFilename, std::ios::binary | std::ios::trunc);
+        CHECK(out.is_open());
+        std::vector<char> bytes = {'a', 'b', 'a', 'c', 'a', 'b', 'a'};
+        auto ft = huffman_compression::frequency_table(bytes);
+        huffman_compression::tree t(ft);
+        std::string codedText;
+        for (char ch: bytes)
+        {
+            codedText.append(t.GetHuffmanCodeForByte(ch));
+        }
+        std::size_t size = codedText.size();
+        while (codedText.size() % huffman_constants::BITS_IN_ONE_BYTE != huffman_constants::SIZE_T_ZERO)
+        {
+            codedText.append(huffman_constants::STR_ZERO);
+        }
+        bitstream::write(codedText, out);
+        out.close();
+
+        std::ifstream in(outputFilename, std::ios::binary);
+        CHECK(in.is_open());
+
+        std::string data = bitstream::read(size, in, t.GetMapBytesForHuffmanCodes());
+        std::string str(bytes.begin(), bytes.end());
+        CHECK(data == str);
+    }
+}
+
+namespace compressing_and_decompressing_tests
 {
     TEST_CASE("Empty file")
     {
@@ -163,7 +264,7 @@ namespace compressing_tests
         huffman_compression::huffman::Decompress(inC, outD);
         inC.close();
         outD.close();
-        
+
         std::ifstream i(decompressedFilename);
         std::ifstream i2(inputFilename);
         while (!i.eof() && !i2.eof())
@@ -181,10 +282,10 @@ namespace compressing_tests
     {
         std::string inputFilename = "samples/book-war-and-peace.txt";
         std::string compressedFilename = "samples/book-war-and-peaceC.bin";
-        std::ifstream in(inputFilename);
+        std::ifstream in(inputFilename, std::ios::binary);
         CHECK(in.is_open());
 
-        std::ofstream outC(compressedFilename);
+        std::ofstream outC(compressedFilename, std::ios::binary | std::ios::trunc);
         CHECK(outC.is_open());
 
         huffman_compression::huffman::Compress(in, outC);
@@ -192,22 +293,25 @@ namespace compressing_tests
         outC.close();
 
         std::string decompressedFilename = "samples/book-war-and-peaceD.txt";
-        std::ofstream outD(decompressedFilename);
+        std::ofstream outD(decompressedFilename, std::ios::binary | std::ios::trunc);
         CHECK(outD.is_open());
 
-        std::ifstream inC(compressedFilename);
+        std::ifstream inC(compressedFilename, std::ios::binary);
         CHECK(inC.is_open());
 
         huffman_compression::huffman::Decompress(inC, outD);
 
-        std::ifstream inD(decompressedFilename);
-        std::ifstream inF(inputFilename);
+        std::ifstream inD(decompressedFilename, std::ios::binary);
+        std::ifstream inF(inputFilename, std::ios::binary);
         while (!inD.eof() && !inF.eof())
         {
             char ch1, ch2;
             inD.read(&ch1, 1);
             inF.read(&ch2, 1);
-            CHECK(ch1 == ch2);
+            if (!inD.eof() && !inF.eof())
+            {
+                CHECK(ch1 == ch2);
+            }
         }
         inD.close();
         inF.close();

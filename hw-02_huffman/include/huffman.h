@@ -42,11 +42,8 @@ namespace huffman_constants
 namespace huffman_compression
 {
     struct frequency_table;
-
     class huffman;
-
     class node;
-
     class tree;
 
     class huffman
@@ -90,14 +87,14 @@ namespace huffman_compression
     class node
     {
     private:
-        char _value;
-        std::size_t _frequency;
+        char _value{};
+        std::size_t _frequency{};
 
-        std::shared_ptr<node> _left;
-        std::shared_ptr<node> _right;
+        std::shared_ptr<node> _left = nullptr;
+        std::shared_ptr<node> _right = nullptr;
 
     public:
-        node() : _value(0), _frequency(0), _left(nullptr), _right(nullptr)
+        node() : _value(huffman_constants::SIZE_T_ZERO), _frequency(huffman_constants::SIZE_T_ZERO), _left(nullptr), _right(nullptr)
         {}
 
         node(char value, std::size_t frequency) : _value(value), _frequency(frequency), _left(nullptr),
