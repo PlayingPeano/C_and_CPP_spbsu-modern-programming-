@@ -9,6 +9,7 @@
 #include <tuple>
 #include <filesystem>
 #include "bitstream.h"
+#include "parser.h"
 
 namespace huffman_exceptions
 {
@@ -18,6 +19,55 @@ namespace huffman_exceptions
     const char *HuffmanException::what() const noexcept
     {
         return _message.c_str();
+    }
+}
+
+namespace huffman_ui
+{
+    void ProcessInput(int argc, char **argv)
+    {
+        std::string action;
+        std::string InFile;
+        std::string OutFile;
+        try
+        {
+            std::tie(action, InFile, OutFile) = parser::ParseArgs(argc, argv);
+        }
+        catch (std::exception &ex)
+        {
+            throw huffman_exceptions::HuffmanException(ex.what());
+        }
+
+        std::ifstream in(InFile, std::ios::binary);
+        std::ofstream out(OutFile, std::ios::binary | std::ios::trunc);
+        if (!in.is_open() || !out.is_open())
+        {
+            throw huffman_exceptions::HuffmanException("Can't open input file");
+        }
+
+        DoAction(action, in, out);
+
+        in.close();
+        out.close();
+    }
+
+    void DoAction(const std::string &action, std::ifstream &in, std::ofstream &out)
+    {
+        if (action == huffman_constants::STR_COMPRESS_FLAG)
+        {
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::Compress(
+                    in,
+                    out);
+            std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
+                      << std::endl;
+        } else
+        {
+            auto [sizeOfInputFile, pureSizeOfResult, sizeOfAdditionalData] = huffman_compression::Decompress(
+                    in,
+                    out);
+            std::cout << sizeOfInputFile << std::endl << pureSizeOfResult << std::endl << sizeOfAdditionalData
+                      << std::endl;
+        }
     }
 }
 

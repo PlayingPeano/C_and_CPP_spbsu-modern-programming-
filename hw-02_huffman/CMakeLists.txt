@@ -11,6 +11,8 @@ add_executable(hw-02_huffman
         src/huffman.cpp
         include/bitstream.h
         src/bitstream.cpp
+        include/parser.h
+        src/parser.cpp
 )
 
 add_executable(hw-02_huffman_tests
@@ -20,6 +22,8 @@ add_executable(hw-02_huffman_tests
         src/huffman.cpp
         include/bitstream.h
         src/bitstream.cpp
+        include/parser.h
+        src/parser.cpp
 )
 
 #add_executable(asan-target
@@ -31,8 +35,8 @@ add_executable(hw-02_huffman_tests
 #        src/bitstream.cpp
 #)
 
-target_include_directories(hw-02_huffman PUBLIC include ./* ./ ./include ./tmp/ci_6751967856/output/private)
-target_include_directories(hw-02_huffman_tests PUBLIC include doctest/doctest tests)
+target_include_directories(hw-02_huffman PUBLIC include)
+target_include_directories(hw-02_huffman_tests PUBLIC include)
 #target_include_directories(asan-target PUBLIC include doctest/doctest tests)
 
 target_compile_options(hw-02_huffman PRIVATE
@@ -42,7 +46,7 @@ target_compile_options(hw-02_huffman PRIVATE
         -Werror
 #        -fsanitize=undefined
 #        -fuse-ld=lld
-#        -g
+        -g
 )
 
 target_compile_options(hw-02_huffman_tests PRIVATE
@@ -52,7 +56,7 @@ target_compile_options(hw-02_huffman_tests PRIVATE
         -Werror
 #        -fsanitize=undefined
 #        -fuse-ld=lld
-#        -g
+        -g
 )
 
 #target_compile_options(asan-target PRIVATE -fsanitize=address)

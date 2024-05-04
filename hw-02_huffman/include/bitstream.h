@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include "huffman.h"
 
 namespace bitstream_constants
 {

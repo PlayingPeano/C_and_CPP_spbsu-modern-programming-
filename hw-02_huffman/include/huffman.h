@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <vector>
 #include <exception>
+#include <fstream>
 
 namespace huffman_exceptions
 {
@@ -37,6 +38,14 @@ namespace huffman_constants
     const std::size_t SIZE_T_ONE = 1;
     const std::string STR_EMPTY{};
     const char CHAR_EMPTY{};
+    const std::string STR_COMPRESS_FLAG = "-c";
+    const std::string STR_DECOMPRESS_FLAG = "-u";
+}
+
+namespace huffman_ui
+{
+    void ProcessInput(int argc, char **argv);
+    void DoAction(const std::string &action, std::ifstream &in, std::ofstream &out);
 }
 
 namespace huffman_compression
