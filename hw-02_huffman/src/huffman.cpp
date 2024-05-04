@@ -75,6 +75,11 @@ namespace huffman_help_functions
         std::size_t additionalSize = huffman_constants::SIZE_T_ZERO;
         std::size_t compressedSize = huffman_constants::SIZE_T_ZERO;
 
+        if (data.empty())
+        {
+            return {additionalSize, compressedSize};
+        }
+
         std::string codedText;
         for (char ch: data)
         {
