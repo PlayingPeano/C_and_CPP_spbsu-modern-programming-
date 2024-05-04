@@ -4,6 +4,28 @@
 #include <string>
 #include <map>
 
+namespace bitstream_help_functions
+{
+    std::bitset<huffman_constants::BITS_IN_ONE_BYTE> ReadOneByte(std::istream &in)
+    {
+        char tmp{};
+        in.read(&tmp, sizeof(char));
+        std::bitset<huffman_constants::BITS_IN_ONE_BYTE> byte{};
+        for (std::size_t j = huffman_constants::SIZE_T_ZERO; j < huffman_constants::BITS_IN_ONE_BYTE; ++j)
+        {
+            byte[j] = (tmp) & (huffman_constants::SIZE_T_ONE << j);
+        }
+        return byte;
+    }
+
+    bool CodeIsValid(std::string &code, std::map<std::string, char> &decodedMap, std::size_t i, std::size_t j,
+                     std::size_t numOfBytesInCodedText, std::size_t sizeOfGarbageBits)
+    {
+        return decodedMap.find(code) != decodedMap.end() &&
+               (i != numOfBytesInCodedText - 1 || j < huffman_constants::BITS_IN_ONE_BYTE - sizeOfGarbageBits);
+    }
+}
+
 namespace bitstream
 {
     void write(std::string &bits, std::ostream &out)
@@ -28,44 +50,25 @@ namespace bitstream
         std::size_t sizeOfGarbageBits =
                 (huffman_constants::BITS_IN_ONE_BYTE - (codedTextSize % huffman_constants::BITS_IN_ONE_BYTE)) %
                 huffman_constants::BITS_IN_ONE_BYTE;
-
         std::size_t add = static_cast<int>((codedTextSize %
-                                           huffman_constants::BITS_IN_ONE_BYTE) !=
-                                           huffman_constants::SIZE_T_ZERO);
-
+                                            huffman_constants::BITS_IN_ONE_BYTE) != huffman_constants::SIZE_T_ZERO);
         std::size_t numOfBytesInCodedText = codedTextSize / huffman_constants::BITS_IN_ONE_BYTE + add;
 
-        std::size_t garbageChars = huffman_constants::SIZE_T_ZERO;
         for (std::size_t i = huffman_constants::SIZE_T_ZERO;
              i < numOfBytesInCodedText; ++i)
         {
             static std::string code{};
-            char tmp{};
-            in.read(&tmp, sizeof(char));
-            std::bitset<huffman_constants::BITS_IN_ONE_BYTE> byte{};
-            for (std::size_t j = huffman_constants::SIZE_T_ZERO; j < huffman_constants::BITS_IN_ONE_BYTE; ++j)
-            {
-                byte[j] = (tmp) & (huffman_constants::SIZE_T_ONE << j);
-            }
+            std::bitset<huffman_constants::BITS_IN_ONE_BYTE> byte = bitstream_help_functions::ReadOneByte(in);
             for (std::size_t j = huffman_constants::SIZE_T_ZERO; j < huffman_constants::BITS_IN_ONE_BYTE; ++j)
             {
                 code.append(byte[j] ? huffman_constants::STR_ONE : huffman_constants::STR_ZERO);
-                if (decodedMap.find(code) != decodedMap.end())
+                if (bitstream_help_functions::CodeIsValid(code, decodedMap, i, j, numOfBytesInCodedText,
+                                                          sizeOfGarbageBits))
                 {
-                    if (i == numOfBytesInCodedText - 1 && j >= huffman_constants::BITS_IN_ONE_BYTE - sizeOfGarbageBits)
-                    {
-                        ++garbageChars;
-                    }
                     char res = decodedMap[code];
                     decodedText.append(huffman_constants::SIZE_T_ONE, res);
                     code.clear();
                 }
-            }
-
-            while (garbageChars)
-            {
-                --garbageChars;
-                decodedText.pop_back();
             }
         }
         return decodedText;
