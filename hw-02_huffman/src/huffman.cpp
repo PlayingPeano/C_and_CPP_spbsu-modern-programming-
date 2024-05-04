@@ -35,20 +35,19 @@ namespace huffman_help_functions
     {
         std::size_t fileSize = GetSizeOfFile(in);
         data.resize(fileSize);
-        if (!in.read(data.data(), fileSize))
+        if (!in.read(data.data(), static_cast<std::streamsize>(fileSize)))
         {
             throw huffman_exceptions::HuffmanException("Can't read input file");
         }
     }
 
-    std::pair<std::size_t, std::size_t>
-    WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data)
+    std::size_t
+    WriteAdditionalDataToFile(std::ofstream &out, std::vector<char> &data, huffman_compression::tree &treeWithCodes)
     {
         std::size_t additionalSize = huffman_constants::SIZE_T_ZERO;
-        std::size_t compressedSize = huffman_constants::SIZE_T_ZERO;
         if (data.empty())
         {
-            return {additionalSize, compressedSize};
+            return additionalSize;
         }
 
         huffman_compression::frequency_table frequencyTable(data);
@@ -66,7 +65,15 @@ namespace huffman_help_functions
             additionalSize += sizeof(key) + sizeof(value);
         }
 
-        huffman_compression::tree treeWithCodes(frequencyTable);
+        treeWithCodes = huffman_compression::tree(frequencyTable);
+        return additionalSize;
+    }
+
+    std::pair<std::size_t, std::size_t>
+    WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data, huffman_compression::tree &treeWithCodes)
+    {
+        std::size_t additionalSize = huffman_constants::SIZE_T_ZERO;
+        std::size_t compressedSize = huffman_constants::SIZE_T_ZERO;
 
         std::string codedText;
         for (char ch: data)
@@ -212,6 +219,22 @@ namespace huffman_compression
         }
     }
 
+    void tree::swap(tree &first, tree &second)
+    {
+        std::swap(first._root, second._root);
+        std::swap(first.huffman_codes_for_bytes, second.huffman_codes_for_bytes);
+        std::swap(first.bytes_for_huffman_codes, second.bytes_for_huffman_codes);
+    }
+
+    tree &tree::operator=(tree &&tree) noexcept
+    {
+        if (this != &tree)
+        {
+            swap(*this, tree);
+        }
+        return *this;
+    }
+
     void tree::ObtainHuffmanCodes(const std::shared_ptr<node> &current, const std::string &code)
     {
         if (!current)
@@ -236,7 +259,6 @@ namespace huffman_compression
         ObtainHuffmanCodes(current->GetLeft(), code + huffman_constants::STR_ZERO);
         ObtainHuffmanCodes(current->GetRight(), code + huffman_constants::STR_ONE);
     }
-
 
 
     std::shared_ptr<node> tree::GetRoot() const
@@ -268,16 +290,18 @@ namespace huffman_compression
     }
 
 
-
     std::tuple<std::size_t, std::size_t, std::size_t>
     Compress(std::ifstream &in, std::ofstream &out)
     {
         std::vector<char> data{};
         huffman_help_functions::GetDataFromFile(in, data);
 
-        auto [additionalSize, compressedSize] = huffman_help_functions::WriteCompressedDataToFile(out, data);
+        tree treeWithCodes;
+        std::size_t additionalSize = huffman_help_functions::WriteAdditionalDataToFile(out, data, treeWithCodes);
 
-        return {data.size(), compressedSize, additionalSize};
+        auto [addOns, compressedSize] = huffman_help_functions::WriteCompressedDataToFile(out, data, treeWithCodes);
+
+        return {data.size(), compressedSize, additionalSize + addOns};
     }
 
     std::tuple<std::size_t, std::size_t, std::size_t>
@@ -297,7 +321,7 @@ namespace huffman_compression
 
         std::string decodedText;
         std::size_t compressedDataSize = huffman_help_functions::ReadEncodedDataToString(in, decodedText,
-                                                                          treeWithCodes.GetMapBytesForHuffmanCodes());
+                                                                                         treeWithCodes.GetMapBytesForHuffmanCodes());
 
         out.write(decodedText.c_str(), static_cast<std::streamsize>(decodedText.size()));
 

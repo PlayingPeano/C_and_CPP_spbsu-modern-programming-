@@ -39,21 +39,6 @@ namespace huffman_constants
     const char CHAR_EMPTY{};
 }
 
-namespace huffman_help_functions
-{
-    void GetDataFromFile(std::ifstream &in, std::vector<char> &data);
-
-    std::pair<std::size_t, std::size_t>
-    WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data);
-
-    void ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table);
-
-    std::size_t
-    ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap);
-
-    std::size_t GetSizeOfFile(std::ifstream &in);
-}
-
 namespace huffman_compression
 {
     struct frequency_table;
@@ -127,10 +112,19 @@ namespace huffman_compression
 
         void ObtainHuffmanCodes(const std::shared_ptr<node> &node, const std::string &code);
 
+        static void swap(tree &first, tree &second);
+
     public:
         tree();
 
         explicit tree(const frequency_table &table);
+
+        tree(tree &&tree) noexcept: _root(std::move(tree._root)),
+                                    huffman_codes_for_bytes(std::move(tree.huffman_codes_for_bytes)),
+                                    bytes_for_huffman_codes(std::move(tree.bytes_for_huffman_codes))
+        {}
+
+        tree &operator=(tree &&tree) noexcept;
 
         [[nodiscard]] std::shared_ptr<node> GetRoot() const;
 
@@ -140,4 +134,22 @@ namespace huffman_compression
 
         std::map<std::string, char> &GetMapBytesForHuffmanCodes();
     };
+}
+
+namespace huffman_help_functions
+{
+    void GetDataFromFile(std::ifstream &in, std::vector<char> &data);
+
+    std::pair<std::size_t, huffman_compression::tree>
+    WriteAdditionalDataToFile(std::ofstream &out, std::vector<char> &data);
+
+    std::pair<std::size_t, std::size_t>
+    WriteCompressedDataToFile(std::ofstream &out, std::vector<char> &data, huffman_compression::tree &tree);
+
+    void ReadFrequencyTable(std::ifstream &in, std::map<char, std::size_t> &table);
+
+    std::size_t
+    ReadEncodedDataToString(std::istream &in, std::string &data, std::map<std::string, char> &decodedMap);
+
+    std::size_t GetSizeOfFile(std::ifstream &in);
 }
