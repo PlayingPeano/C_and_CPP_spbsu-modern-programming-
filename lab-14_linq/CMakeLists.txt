@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.22.1)
 project(lab_14_linq)
 
 set(CMAKE_CXX_STANDARD 17)
