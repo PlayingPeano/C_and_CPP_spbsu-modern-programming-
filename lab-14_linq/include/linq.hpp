@@ -33,12 +33,16 @@ namespace linq
     {
         template<class T>
         class take_enumerator;
+
         template<class T>
         class drop_enumerator;
+
         template<class T, class U, class F>
         class select_enumerator;
+
         template<class T, class F>
         class until_enumerator;
+
         template<class T, class F>
         class where_enumerator;
 
@@ -159,12 +163,12 @@ namespace linq
 
             take_enumerator &operator++() override
             {
-                --amount_remaining_;
-                ++parent_;
-                if (amount_remaining_ < 0 || !static_cast<bool>(parent_))
+                if (amount_remaining_ <= 0 || !static_cast<bool>(parent_))
                 {
                     throw linq_exceptions::linq_exception(linq_exceptions::error_messages::out_of_range);
                 }
+                --amount_remaining_;
+                ++parent_;
                 return *this;
             }
 
