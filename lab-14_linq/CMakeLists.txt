@@ -7,7 +7,10 @@ include_directories(.)
 include_directories(include)
 include_directories(src)
 
-add_executable(lab_14_linq_test
+add_executable(lab_14_linq_minimal_smoke_test
         include/linq.hpp
-        src/minimal_smoke_test.cpp
+        src/minimal_smoke_test.cpp)
+
+add_executable(lab_14_linq_smoke_test
+        include/linq.hpp
         src/smoke_test.cpp)

@@ -76,11 +76,11 @@ namespace linq
 
             auto until_eq(T value)
             {
-                const auto func = [&value](T a) -> bool
+                const auto func = [value](T a) -> bool
                 {
                     return a == value;
                 };
-                return until_enumerator<T, decltype(func)>(*this, std::move(func));
+                return until_enumerator<T, decltype(func)>(*this, func);
             }
 
             template<typename F>
@@ -101,12 +101,23 @@ namespace linq
             std::vector<T> to_vector()
             {
                 std::vector<T> result;
-                while (*this)
+                while (static_cast<bool>(*this))
                 {
                     result.push_back(**this);
                     ++(*this);
                 }
                 return result;
+            }
+
+            template<typename Iter>
+            void copy_to(Iter it)
+            {
+                while (static_cast<bool>(*this))
+                {
+                    *it = std::move(**this);
+                    ++it;
+                    ++(*this);
+                }
             }
         };
 
@@ -212,7 +223,7 @@ namespace linq
         class select_enumerator : public enumerator<T>
         {
         public:
-            select_enumerator(enumerator<U> &parent, F func) : parent_(parent), func_(std::move<F>(func))
+            select_enumerator(enumerator<U> &parent, F func) : parent_(parent), func_(std::move(func))
             {
                 update_current();
             }
@@ -256,7 +267,7 @@ namespace linq
         class until_enumerator : public enumerator<T>
         {
         public:
-            until_enumerator(enumerator<T> &parent, F predicate) : parent_(parent), predicate_(std::move<F>(predicate))
+            until_enumerator(enumerator<T> &parent, F predicate) : parent_(parent), predicate_(std::move(predicate))
             {}
 
             until_enumerator &operator++() override
@@ -275,7 +286,7 @@ namespace linq
                 if (!updated_flag && !ending_flag)
                 {
                     updated_flag = true;
-                    ending_flag = !static_cast<bool>(parent_) || !predicate_(*parent_);
+                    ending_flag = !static_cast<bool>(parent_) || predicate_(*parent_);
                 }
                 return static_cast<bool>(parent_) && !ending_flag;
             }
@@ -342,9 +353,9 @@ namespace linq
         };
     } // namespace impl
 
-    template<class It>
-    auto from(It beg, It end)
+    template<class Iter>
+    auto from(Iter beg, Iter end)
     {
-        return impl::base_enumerator<typename std::iterator_traits<It>::value_type, It>(beg, end);
+        return impl::base_enumerator<typename std::iterator_traits<Iter>::value_type, Iter>(beg, end);
     }
 } // namespace linq
