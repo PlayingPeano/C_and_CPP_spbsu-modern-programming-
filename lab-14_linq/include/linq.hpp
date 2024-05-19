@@ -1,7 +1,7 @@
 #pragma once
 
-#include <iostream>
-
+#include <iosfwd>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -12,7 +12,7 @@ namespace linq_exceptions
         const std::string out_of_range = "Enumerator is out of range";
         const std::string dereference_error = "Can't get value from out of range enumerator";
     }
-    class linq_exception : public std::exception
+    class linq_exception final : public std::exception
     {
     private:
         std::string message_;
@@ -52,33 +52,33 @@ namespace linq
         public:
             virtual enumerator &operator++() = 0;
 
-            virtual explicit operator bool() = 0;
+            virtual explicit operator bool() noexcept = 0;
 
-            virtual const T &operator*() = 0;
+            virtual const T &operator*() const = 0;
 
-            auto take(int amount)
+            auto take(std::size_t count)
             {
-                return take_enumerator<T>(*this, amount);
+                return take_enumerator<T>(*this, count);
             }
 
-            auto drop(int count)
+            auto drop(std::size_t count)
             {
                 return drop_enumerator<T>(*this, count);
             }
 
-            template<typename U = T, typename F>
-            auto select(F func)
+            template<class U = T, class F>
+            auto select(F&& func)
             {
-                return select_enumerator<U, T, F>(*this, std::move(func));
+                return select_enumerator<U, T, F>(*this, std::forward<F>(func));
             }
 
-            template<typename F>
-            auto until(F func)
+            template<class F>
+            auto until(F&& func)
             {
-                return until_enumerator<T, F>(*this, std::move(func));
+                return until_enumerator<T, F>(*this, std::forward<F>(func));
             }
 
-            auto until_eq(T value)
+            auto until_eq(T&& value)
             {
                 const auto func = [value](T a) -> bool
                 {
@@ -126,7 +126,7 @@ namespace linq
         };
 
         template<class T, class Iter>
-        class base_enumerator : public enumerator<T>
+        class base_enumerator final : public enumerator<T>
         {
         public:
             base_enumerator(Iter beg, Iter end) : beg_(beg), end_(end)
@@ -138,12 +138,12 @@ namespace linq
                 return *this;
             }
 
-            explicit operator bool() override
+            explicit operator bool() noexcept override
             {
                 return beg_ != end_;
             }
 
-            const T &operator*() override
+            const T &operator*() const override
             {
                 return *beg_;
             }
@@ -154,44 +154,44 @@ namespace linq
         };
 
         template<class T>
-        class take_enumerator : public enumerator<T>
+        class take_enumerator final : public enumerator<T>
         {
         public:
-            take_enumerator(enumerator<T> &parent, int amount) :
-                    parent_(parent), amount_remaining_(amount)
+            take_enumerator(enumerator<T> &parent, std::size_t count) :
+                    parent_(parent), count_remaining_(count)
             {}
 
             take_enumerator &operator++() override
             {
-                if (amount_remaining_ <= 0 || !static_cast<bool>(parent_))
+                if (count_remaining_ == 0 || !static_cast<bool>(parent_))
                 {
                     throw linq_exceptions::linq_exception(linq_exceptions::error_messages::out_of_range);
                 }
-                --amount_remaining_;
+                --count_remaining_;
                 ++parent_;
                 return *this;
             }
 
-            explicit operator bool() override
+            explicit operator bool() noexcept override
             {
-                return (amount_remaining_ > 0 && static_cast<bool>(parent_));
+                return (count_remaining_ > 0 && static_cast<bool>(parent_));
             }
 
-            const T &operator*() override
+            const T &operator*() const override
             {
                 return *parent_;
             }
 
         private:
             enumerator<T> &parent_;
-            int amount_remaining_;
+            std::size_t count_remaining_;
         };
 
         template<class T>
-        class drop_enumerator : public enumerator<T>
+        class drop_enumerator final : public enumerator<T>
         {
         public:
-            drop_enumerator(enumerator<T> &parent, int count) : parent_(parent)
+            drop_enumerator(enumerator<T> &parent, std::size_t count) : parent_(parent)
             {
                 for (std::size_t i = 0; i < count && static_cast<bool>(parent_); ++i)
                 {
@@ -205,12 +205,12 @@ namespace linq
                 return *this;
             }
 
-            explicit operator bool() override
+            explicit operator bool() noexcept override
             {
                 return static_cast<bool>(parent_);
             }
 
-            const T &operator*() override
+            const T &operator*() const override
             {
                 if (!static_cast<bool>(parent_))
                 {
@@ -224,7 +224,7 @@ namespace linq
         };
 
         template<class T, class U, class F>
-        class select_enumerator : public enumerator<T>
+        class select_enumerator final : public enumerator<T>
         {
         public:
             select_enumerator(enumerator<U> &parent, F func) : parent_(parent), func_(std::move(func))
@@ -239,12 +239,12 @@ namespace linq
                 return *this;
             }
 
-            explicit operator bool() override
+            explicit operator bool() noexcept override
             {
                 return static_cast<bool>(parent_);
             }
 
-            const T &operator*() override
+            const T &operator*() const override
             {
                 if (!static_cast<bool>(parent_))
                 {
@@ -268,7 +268,7 @@ namespace linq
         };
 
         template<class T, class F>
-        class until_enumerator : public enumerator<T>
+        class until_enumerator final : public enumerator<T>
         {
         public:
             until_enumerator(enumerator<T> &parent, F predicate) : parent_(parent), predicate_(std::move(predicate))
@@ -285,7 +285,7 @@ namespace linq
                 return *this;
             }
 
-            explicit operator bool() override
+            explicit operator bool() noexcept override
             {
                 if (!updated_flag && !ending_flag)
                 {
@@ -295,7 +295,7 @@ namespace linq
                 return static_cast<bool>(parent_) && !ending_flag;
             }
 
-            const T &operator*() override
+            const T &operator*() const override
             {
                 if (!static_cast<bool>(parent_))
                 {
@@ -313,7 +313,7 @@ namespace linq
         };
 
         template<class T, class F>
-        class where_enumerator : public enumerator<T>
+        class where_enumerator final : public enumerator<T>
         {
         public:
             where_enumerator(enumerator<T> &parent, F predicate) : parent_(parent), predicate_(std::move(predicate))
@@ -337,12 +337,12 @@ namespace linq
                 return *this;
             }
 
-            explicit operator bool() override
+            explicit operator bool() noexcept override
             {
                 return static_cast<bool>(parent_);
             }
 
-            const T &operator*() override
+            const T &operator*() const override
             {
                 if (!static_cast<bool>(parent_))
                 {
