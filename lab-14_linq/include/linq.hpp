@@ -99,7 +99,7 @@ namespace linq
                 {
                     return a != value;
                 };
-                return where_enumerator<T, decltype(func)>(*this, func);
+                return where_enumerator<T, decltype(func)>(*this, std::move(func));
             }
 
             std::vector<T> to_vector()
