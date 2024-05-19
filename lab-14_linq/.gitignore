@@ -11,5 +11,4 @@ f# This lab:
 # CLion projects:
 /.idea/
 /cmake-build*/
-CMakeLists.txt
 /lab-14_linq.dSYM/
