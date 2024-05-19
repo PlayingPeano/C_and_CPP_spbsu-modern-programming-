@@ -14,3 +14,7 @@ add_executable(lab_14_linq_minimal_smoke_test
 add_executable(lab_14_linq_smoke_test
         include/linq.hpp
         src/smoke_test.cpp)
+
+add_executable(lab_14_linq
+        include/linq.hpp
+        src/test.cpp)
