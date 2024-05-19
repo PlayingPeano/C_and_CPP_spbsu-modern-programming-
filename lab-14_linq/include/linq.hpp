@@ -69,13 +69,13 @@ namespace linq
             template<typename U = T, typename F>
             auto select(F func)
             {
-                return select_enumerator<U, T, F>(*this, std::move(func));
+                return select_enumerator<U, T, F>(*this, func);
             }
 
             template<typename F>
             auto until(F func)
             {
-                return until_enumerator<T, F>(*this, std::move(func));
+                return until_enumerator<T, F>(*this, func);
             }
 
             auto until_eq(T value)
@@ -90,7 +90,7 @@ namespace linq
             template<typename F>
             auto where(F func)
             {
-                return where_enumerator<T, F>(*this, std::move(func));
+                return where_enumerator<T, F>(*this, func);
             }
 
             auto where_neq(T value)
@@ -99,7 +99,7 @@ namespace linq
                 {
                     return a != value;
                 };
-                return where_enumerator<T, decltype(func)>(*this, std::move(func));
+                return where_enumerator<T, decltype(func)>(*this, func);
             }
 
             std::vector<T> to_vector()
@@ -316,7 +316,7 @@ namespace linq
         class where_enumerator : public enumerator<T>
         {
         public:
-            where_enumerator(enumerator<T> &parent, F predicate) : parent_(parent), predicate_(predicate)
+            where_enumerator(enumerator<T> &parent, F predicate) : parent_(parent), predicate_(std::move(predicate))
             {
                 while (static_cast<bool>(parent_) && !predicate_(*parent_))
                 {
