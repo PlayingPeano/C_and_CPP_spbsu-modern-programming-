@@ -276,23 +276,17 @@ namespace linq
 
             until_enumerator &operator++() override
             {
-                if (!static_cast<bool>(parent_) || ending_flag)
+                if (!static_cast<bool>(parent_) || predicate_(*parent_))
                 {
                     throw linq_exceptions::linq_exception(linq_exceptions::error_messages::out_of_range);
                 }
                 ++parent_;
-                updated_flag = false;
                 return *this;
             }
 
             explicit operator bool() noexcept override
             {
-                if (!updated_flag && !ending_flag)
-                {
-                    updated_flag = true;
-                    ending_flag = !static_cast<bool>(parent_) || predicate_(*parent_);
-                }
-                return static_cast<bool>(parent_) && !ending_flag;
+                return static_cast<bool>(parent_) && !predicate_(*parent_);
             }
 
             const T &operator*() const override
@@ -307,9 +301,6 @@ namespace linq
         private:
             enumerator<T> &parent_;
             F predicate_;
-
-            bool ending_flag = false;
-            bool updated_flag = false;
         };
 
         template<class T, class F>
